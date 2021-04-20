@@ -120,6 +120,15 @@ SHAPE_COLORS = [(0, 255, 0), (255, 0, 0), (0, 255, 255), (255, 255, 0),
                 (255, 165, 0), (0, 0, 255), (128, 0, 128)]
 
 
+class Piece(object):
+    def __init__(self, x, y, shape):
+        self.x = x
+        self.y = y
+        self.shape = shape
+        self.color = SHAPE_COLORS[SHAPES.index(shape)]
+        self.rotation = 0
+
+
 def main():
     run = True
     while run:
