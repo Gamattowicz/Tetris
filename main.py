@@ -210,6 +210,14 @@ def draw_window(surface, grid):
     pygame.display.update()
 
 
+def check_lost(positions):
+    for pos in positions:
+        x, y = pos
+        if y < 1:
+            return True
+    return False
+
+
 def main(WIN):
     locked_pos = {}
     grid = create_grid(locked_pos)
@@ -256,6 +264,11 @@ def main(WIN):
 
         draw_window(WIN, grid)
         pygame.display.update()
+
+        if check_lost(locked_pos):
+            run = False
+
+    pygame.display.quit()
 
     pygame.quit()
 
