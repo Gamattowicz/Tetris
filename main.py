@@ -214,7 +214,9 @@ def main(WIN):
     locked_pos = {}
     grid = create_grid(locked_pos)
 
+    change_piece = False
     current_piece = get_shape()
+    next_piece = get_shape()
     clock = pygame.time.Clock()
     fall_time = 0
     fall_speed = 0.27
@@ -230,6 +232,7 @@ def main(WIN):
             current_piece.y += 1
             if not(valid_space(current_piece, grid)) and current_piece.y > 0:
                 current_piece.y -= 1
+                change_piece = True
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -242,6 +245,14 @@ def main(WIN):
             x, y = shape_pos[i]
             if y > -1:
                 grid[y][x] = current_piece.color
+
+        if change_piece:
+            for pos in shape_pos:
+                p = (pos[0], pos[1])
+                locked_pos[p] = current_piece.color
+            current_piece = next_piece
+            next_piece = get_shape()
+            change_piece = False
 
         draw_window(WIN, grid)
         pygame.display.update()
