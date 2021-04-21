@@ -1,4 +1,5 @@
 import pygame
+import random
 
 # SIZE OF SCREEN
 WIDTH, HEIGHT = 800, 700
@@ -157,17 +158,52 @@ def draw_grid(surface, grid):
                                                                                                      START_BOX_Y + BOX_HEIGHT))
 
 
+def get_shape():
+    return Piece(5, 0, random.choice(SHAPES))
+
+
+def convert_shape_format(block):
+    positions = []
+    variety = block.shape[block.rotation % len(block.shape)]
+
+    for i, row in enumerate(variety):
+        for j, column in enumerate(row):
+            if '0' in column:
+                positions.append((block.x + j, block.y + i))
+
+    for i, pos in enumerate(positions):
+        positions[i] = (pos[0] - 2, pos[1] - 4)
+
+    return positions
+
+
+def valid_space(shape, grid):
+    free_pos = [[(j, i) for j in range(10) if grid[i][j] == (0, 0, 0)] for i in range(20)]
+    free_pos = [j for sub in free_pos for j in sub]
+
+    formatted = convert_shape_format(shape)
+
+    for pos in formatted:
+        if pos not in free_pos:
+            if pos[1] > -1:
+                return False
+    return True
+
+
 def draw_window(surface, grid):
     surface.fill((0, 0, 0))
 
+    # draw title over the box
     title = TITLE_FONT.render('TETRIS', 1, (255, 255, 255))
-    surface.blit(title, (START_BOX_X + BOX_WIDTH / 2 - (title.get_width() / 2), 30))
+    surface.blit(title, (START_BOX_X + BOX_WIDTH / 2 - (title.get_width() / 2), 20))
 
+    # draw each brick
     for i in range(len(grid)):
         for j in range(len(grid[i])):
             pygame.draw.rect(surface, grid[i][j], (START_BOX_X + j * BLOCK_SIZE, START_BOX_Y + i * BLOCK_SIZE,
                                                    BLOCK_SIZE, BLOCK_SIZE), 0)
 
+    # draw border of box
     pygame.draw.rect(surface, (255, 0, 0), (START_BOX_X, START_BOX_Y, BOX_WIDTH, BOX_HEIGHT), 5)
 
     draw_grid(surface, grid)
@@ -178,12 +214,35 @@ def main(WIN):
     locked_pos = {}
     grid = create_grid(locked_pos)
 
+    current_piece = get_shape()
+    clock = pygame.time.Clock()
+    fall_time = 0
+    fall_speed = 0.27
+
     run = True
     while run:
         grid = create_grid(locked_pos)
+        fall_time += clock.get_rawtime()
+        clock.tick()
+
+        if fall_time / 1000 > fall_speed:
+            fall_time = 0
+            current_piece.y += 1
+            if not(valid_space(current_piece, grid)) and current_piece.y > 0:
+                current_piece.y -= 1
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
+
+        shape_pos = convert_shape_format(current_piece)
+
+        # draw square within the block
+        for i in range(len(shape_pos)):
+            x, y = shape_pos[i]
+            if y > -1:
+                grid[y][x] = current_piece.color
+
         draw_window(WIN, grid)
         pygame.display.update()
 
