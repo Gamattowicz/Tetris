@@ -246,6 +246,25 @@ def main(WIN):
             if event.type == pygame.QUIT:
                 run = False
 
+            # Key handling
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LEFT:
+                    current_piece.x -= 1
+                    if not(valid_space(current_piece, grid)):
+                        current_piece.x += 1
+                elif event.key == pygame.K_RIGHT:
+                    current_piece.x += 1
+                    if not(valid_space(current_piece, grid)):
+                        current_piece.x -= 1
+                elif event.key == pygame.K_DOWN:
+                    current_piece.y += 1
+                    if not(valid_space(current_piece, grid)):
+                        current_piece.y -= 1
+                elif event.key == pygame.K_UP:
+                    current_piece.rotation += 1
+                    if not(valid_space(current_piece, grid)):
+                        current_piece.rotation -= 1
+
         shape_pos = convert_shape_format(current_piece)
 
         # draw square within the block
