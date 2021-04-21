@@ -1,7 +1,7 @@
 import pygame
 
 # SIZE OF SCREEN
-WIDTH, HEIGHT = 900, 500
+WIDTH, HEIGHT = 800, 700
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('TETRIS')
 pygame.init()
