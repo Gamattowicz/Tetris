@@ -8,7 +8,7 @@ pygame.display.set_caption('TETRIS')
 pygame.init()
 
 # SIZE OF BOX
-BLOCK_SIZE = 30
+BLOCK_SIZE: int = 30
 BOX_WIDTH, BOX_HEIGHT = 10 * BLOCK_SIZE, 20 * BLOCK_SIZE
 
 # BEGIN POINT OF BOX
@@ -152,11 +152,13 @@ def draw_grid(surface, grid):
     sy = START_BOX_Y
 
     for i in range(len(grid)):
-        pygame.draw.line(surface, (128,128,128), (START_BOX_X, START_BOX_Y + i * BLOCK_SIZE), (START_BOX_X + BOX_WIDTH,
-                                                                                              START_BOX_Y + i * BLOCK_SIZE))
+        pygame.draw.line(surface, (128, 128, 128), (START_BOX_X, START_BOX_Y + i * BLOCK_SIZE),
+                         (START_BOX_X + BOX_WIDTH,
+                          START_BOX_Y + i * BLOCK_SIZE))
         for j in range(len(grid[i])):
-            pygame.draw.line(surface, (128, 128, 128), (START_BOX_X + j * BLOCK_SIZE, START_BOX_Y), (START_BOX_X + j * BLOCK_SIZE,
-                                                                                                     START_BOX_Y + BOX_HEIGHT))
+            pygame.draw.line(surface, (128, 128, 128), (START_BOX_X + j * BLOCK_SIZE, START_BOX_Y),
+                             (START_BOX_X + j * BLOCK_SIZE,
+                              START_BOX_Y + BOX_HEIGHT))
 
 
 def get_shape():
@@ -223,7 +225,7 @@ def draw_next_shape(shape, surface):
     text = PREVIEW_FONT.render('Next Block', 1, (255, 255, 255))
 
     preview_x = START_BOX_X + BOX_WIDTH + 50
-    preview_y = START_BOX_Y + BOX_HEIGHT/2 - 100
+    preview_y = START_BOX_Y + BOX_HEIGHT / 2 - 100
     surface.blit(text, (preview_x + text.get_width() / 2, preview_y - 30 - BLOCK_SIZE))
     format = shape.shape[shape.rotation % len(shape.shape)]
 
@@ -242,6 +244,26 @@ def draw_next_shape(shape, surface):
                      (preview_x, preview_y + 5 * BLOCK_SIZE), width=3)
     pygame.draw.line(surface, (255, 0, 0), (preview_x + 5 * BLOCK_SIZE, preview_y - BLOCK_SIZE),
                      (preview_x + 5 * BLOCK_SIZE, preview_y + 5 * BLOCK_SIZE), width=3)
+
+
+def clear_rows(grid, lock):
+    num_del = 0  # number of row to delete
+    for i in range(len(grid) -1, -1, -1):
+        row = grid[i]
+        if (0, 0, 0) not in row:
+            num_del += 1
+            ind = i  # index of row to delete
+            for j in range(len(row)):
+                try:
+                    del lock[(j, i)]
+                except:
+                    continue
+    if num_del > 0:
+        for key in sorted(list(lock), key=lambda x: x[1])[::-1]:
+            x, y = key
+            if y < ind:
+                new_key = (x, y + num_del)
+                lock[new_key] = lock.pop(key)
 
 
 def main(WIN):
@@ -264,7 +286,7 @@ def main(WIN):
         if fall_time / 1000 > fall_speed:
             fall_time = 0
             current_piece.y += 1
-            if not(valid_space(current_piece, grid)) and current_piece.y > 0:
+            if not (valid_space(current_piece, grid)) and current_piece.y > 0:
                 current_piece.y -= 1
                 change_piece = True
 
@@ -276,19 +298,19 @@ def main(WIN):
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
                     current_piece.x -= 1
-                    if not(valid_space(current_piece, grid)):
+                    if not (valid_space(current_piece, grid)):
                         current_piece.x += 1
                 elif event.key == pygame.K_RIGHT:
                     current_piece.x += 1
-                    if not(valid_space(current_piece, grid)):
+                    if not (valid_space(current_piece, grid)):
                         current_piece.x -= 1
                 elif event.key == pygame.K_DOWN:
                     current_piece.y += 1
-                    if not(valid_space(current_piece, grid)):
+                    if not (valid_space(current_piece, grid)):
                         current_piece.y -= 1
                 elif event.key == pygame.K_UP:
                     current_piece.rotation += 1
-                    if not(valid_space(current_piece, grid)):
+                    if not (valid_space(current_piece, grid)):
                         current_piece.rotation -= 1
 
         shape_pos = convert_shape_format(current_piece)
@@ -306,6 +328,7 @@ def main(WIN):
             current_piece = next_piece
             next_piece = get_shape()
             change_piece = False
+            clear_rows(grid, locked_pos)
 
         draw_window(WIN, grid)
         draw_next_shape(next_piece, WIN)
