@@ -18,6 +18,7 @@ START_BOX_Y = HEIGHT - BOX_HEIGHT
 # FONTS
 TITLE_FONT = pygame.font.SysFont('arial', 60)
 PREVIEW_FONT = pygame.font.SysFont('arial', 20)
+SCORE_FONT = pygame.font.SysFont('arial', 25)
 
 # SHAPE FORMATS
 S = [['.....',
@@ -221,13 +222,17 @@ def check_lost(positions):
 
 
 # draw preview next block
-def draw_next_shape(shape, surface):
+def draw_next_shape(shape, surface, score):
     text = PREVIEW_FONT.render('Next Block', 1, (255, 255, 255))
 
     preview_x = START_BOX_X + BOX_WIDTH + 50
     preview_y = START_BOX_Y + BOX_HEIGHT / 2 - 100
-    surface.blit(text, (preview_x + text.get_width() / 2, preview_y - 30 - BLOCK_SIZE))
+    surface.blit(text, (preview_x + 2.5 * BLOCK_SIZE - text.get_width() / 2, preview_y - 30 - BLOCK_SIZE))
     format = shape.shape[shape.rotation % len(shape.shape)]
+
+    # draw score
+    label = SCORE_FONT.render(f'SCORE: {score}', 1, (255, 255, 255))
+    surface.blit(label, (preview_x + 2.5 * BLOCK_SIZE - label.get_width() / 2, preview_y - 80 - BLOCK_SIZE))
 
     for i, row in enumerate(format):
         for j, column in enumerate(row):
@@ -265,6 +270,8 @@ def clear_rows(grid, lock):
                 new_key = (x, y + num_del)
                 lock[new_key] = lock.pop(key)
 
+    return num_del
+
 
 def main(WIN):
     locked_pos = {}
@@ -276,6 +283,7 @@ def main(WIN):
     clock = pygame.time.Clock()
     fall_time = 0
     fall_speed = 0.27
+    score = 0
 
     run = True
     while run:
@@ -328,10 +336,10 @@ def main(WIN):
             current_piece = next_piece
             next_piece = get_shape()
             change_piece = False
-            clear_rows(grid, locked_pos)
+            score += clear_rows(grid, locked_pos) * 10
 
         draw_window(WIN, grid)
-        draw_next_shape(next_piece, WIN)
+        draw_next_shape(next_piece, WIN, score)
         pygame.display.update()
 
         if check_lost(locked_pos):
