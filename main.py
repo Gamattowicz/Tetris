@@ -17,6 +17,7 @@ START_BOX_Y = HEIGHT - BOX_HEIGHT
 
 # FONTS
 TITLE_FONT = pygame.font.SysFont('arial', 60)
+PREVIEW_FONT = pygame.font.SysFont('arial', 20)
 
 # SHAPE FORMATS
 S = [['.....',
@@ -207,7 +208,6 @@ def draw_window(surface, grid):
     pygame.draw.rect(surface, (255, 0, 0), (START_BOX_X, START_BOX_Y, BOX_WIDTH, BOX_HEIGHT), 5)
 
     draw_grid(surface, grid)
-    pygame.display.update()
 
 
 def check_lost(positions):
@@ -216,6 +216,32 @@ def check_lost(positions):
         if y < 1:
             return True
     return False
+
+
+# draw preview next block
+def draw_next_shape(shape, surface):
+    text = PREVIEW_FONT.render('Next Block', 1, (255, 255, 255))
+
+    preview_x = START_BOX_X + BOX_WIDTH + 50
+    preview_y = START_BOX_Y + BOX_HEIGHT/2 - 100
+    surface.blit(text, (preview_x + text.get_width() / 2, preview_y - 30 - BLOCK_SIZE))
+    format = shape.shape[shape.rotation % len(shape.shape)]
+
+    for i, row in enumerate(format):
+        for j, column in enumerate(row):
+            if column == '0':
+                pygame.draw.rect(surface, shape.color, (preview_x + j * BLOCK_SIZE, preview_y + i * BLOCK_SIZE,
+                                                        BLOCK_SIZE, BLOCK_SIZE), 0)
+    # draw horizontal borders
+    pygame.draw.line(surface, (255, 0, 0), (preview_x, preview_y - BLOCK_SIZE),
+                     (preview_x + 5 * BLOCK_SIZE, preview_y - BLOCK_SIZE), width=3)
+    pygame.draw.line(surface, (255, 0, 0), (preview_x, preview_y + 5 * BLOCK_SIZE),
+                     (preview_x + 5 * BLOCK_SIZE, preview_y + 5 * BLOCK_SIZE), width=3)
+    # draw vertical borders
+    pygame.draw.line(surface, (255, 0, 0), (preview_x, preview_y - BLOCK_SIZE),
+                     (preview_x, preview_y + 5 * BLOCK_SIZE), width=3)
+    pygame.draw.line(surface, (255, 0, 0), (preview_x + 5 * BLOCK_SIZE, preview_y - BLOCK_SIZE),
+                     (preview_x + 5 * BLOCK_SIZE, preview_y + 5 * BLOCK_SIZE), width=3)
 
 
 def main(WIN):
@@ -282,6 +308,7 @@ def main(WIN):
             change_piece = False
 
         draw_window(WIN, grid)
+        draw_next_shape(next_piece, WIN)
         pygame.display.update()
 
         if check_lost(locked_pos):
