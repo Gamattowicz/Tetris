@@ -128,6 +128,7 @@ SHAPES = [S, Z, I, O, J, L, T]
 SHAPE_COLORS = [(0, 255, 0), (255, 0, 0), (0, 255, 255), (255, 255, 0),
                 (255, 165, 0), (0, 0, 255), (128, 0, 128)]
 active = 1
+speed = 1
 
 
 class Piece(object):
@@ -378,6 +379,8 @@ def pause(WIN):
                         paused = False
                     elif active == 2:
                         main(WIN)
+                    elif active == 3:
+                        main_menu(WIN)
                     elif active == 5:
                         pygame.quit()
 
@@ -385,7 +388,7 @@ def pause(WIN):
 def main(WIN):
     locked_pos = {}
     grid = create_grid(locked_pos)
-
+    speeds = [0.45, 0.3, 0.15]
     change_piece = False
     current_piece = get_shape()
     next_piece = get_shape()
@@ -400,7 +403,7 @@ def main(WIN):
         fall_time += clock.get_rawtime()
         clock.tick()
 
-        if fall_time / 1000 > fall_speed:
+        if fall_time / 1000 > speeds[speed]:
             fall_time = 0
             current_piece.y += 1
             if not (valid_space(current_piece, grid)) and current_piece.y > 0:
@@ -461,10 +464,12 @@ def main(WIN):
 
 def main_menu(WIN):
     global active
+    global speed
     run = True
+    speeds = ['LOW', 'MEDIUM', 'HIGH']
     while run:
         WIN.fill((0, 0, 0))
-        buttons = ['NEW GAME', 'SPEED: LOW', 'LEVEL: EASY', 'HIGH SCORES', 'EXIT']
+        buttons = ['NEW GAME', f'SPEED: {speeds[speed]}', 'LEVEL: EASY', 'HIGH SCORES', 'EXIT']
         draw_menu(WIN, 'MAIN MENU', buttons)
         pygame.display.update()
 
@@ -485,6 +490,11 @@ def main_menu(WIN):
                 elif event.key == pygame.K_RETURN:
                     if active == 1:
                         main(WIN)
+                    elif active == 2:
+                        if speed == 2:
+                            speed = 0
+                        else:
+                            speed += 1
                     elif active == 5:
                         pygame.quit()
 
