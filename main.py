@@ -258,6 +258,26 @@ def draw_next_shape(shape, surface, score):
                      (preview_x + 5 * BLOCK_SIZE, preview_y + 5 * BLOCK_SIZE), width=3)
 
 
+def draw_menu(WIN):
+    menu_text = TITLE_FONT.render('MAIN MENU', 1, (255, 255, 255))
+    WIN.blit(menu_text, (WIDTH / 2 - menu_text.get_width() / 2, HEIGHT / 2 - 250))
+
+    play_text = PREVIEW_FONT.render('NEW GAME', 1, (255, 255, 255))
+    WIN.blit(play_text, (WIDTH / 2 - play_text.get_width() / 2, HEIGHT / 2 - 150))
+
+    speed_text = PREVIEW_FONT.render('SPEED: LOW', 1, (255, 255, 255))
+    WIN.blit(speed_text, (WIDTH / 2 - speed_text.get_width() / 2, HEIGHT / 2 - 100))
+
+    level_text = PREVIEW_FONT.render('LEVEL: EASY', 1, (255, 255, 255))
+    WIN.blit(level_text, (WIDTH / 2 - level_text.get_width() / 2, HEIGHT / 2 - 50))
+
+    score_text = PREVIEW_FONT.render('HIGH SCORES', 1, (255, 255, 255))
+    WIN.blit(score_text, (WIDTH / 2 - score_text.get_width() / 2, HEIGHT / 2))
+
+    exit_text = PREVIEW_FONT.render('EXIT', 1, (255, 255, 255))
+    WIN.blit(exit_text, (WIDTH / 2 - exit_text.get_width() / 2, HEIGHT / 2 + 50))
+
+
 def clear_rows(grid, lock):
     num_del = 0  # number of row to delete
     for i in range(len(grid) -1, -1, -1):
@@ -357,8 +377,22 @@ def main(WIN):
 
     pygame.display.quit()
 
+
+def main_menu(WIN):
+    run = True
+    while run:
+        WIN.fill((0, 0, 0))
+        draw_menu(WIN)
+        pygame.display.update()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+
     pygame.quit()
 
 
-if __name__ == '__main__':
     main(WIN)
+
+
+if __name__ == '__main__':
+    main_menu(WIN)
