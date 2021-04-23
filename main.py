@@ -279,10 +279,9 @@ def draw_menu_button(WIN, text, row, color):
     WIN.blit(label, (button_x, HEIGHT / 2 - rows_height[row]))
 
 
-def draw_menu(WIN):
-    menu_text = TITLE_FONT.render('MAIN MENU', 1, (255, 255, 255))
+def draw_menu(WIN, menu_title, buttons):
+    menu_text = TITLE_FONT.render(menu_title, 1, (255, 255, 255))
     WIN.blit(menu_text, (WIDTH / 2 - menu_text.get_width() / 2, HEIGHT / 2 - 250))
-    buttons = ['NEW GAME', 'SPEED: LOW', 'LEVEL: EASY', 'HIGH SCORES', 'EXIT']
 
     for i, v in enumerate(buttons, start=1):
         if i == active:
@@ -311,6 +310,41 @@ def clear_rows(grid, lock):
                 lock[new_key] = lock.pop(key)
 
     return num_del
+
+
+def pause(WIN):
+    global active
+    buttons = ['RESUME', 'RESTART', 'MAIN MENU', 'HIGH SCORES', 'EXIT']
+    paused = True
+
+    while paused:
+        WIN.fill((0, 0, 0))
+        draw_menu(WIN, 'PAUSE', buttons)
+        pygame.display.update()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    paused = False
+                elif event.key == pygame.K_DOWN:
+                    if active == 5:
+                        active = 1
+                    else:
+                        active += 1
+                elif event.key == pygame.K_UP:
+                    if active == 1:
+                        active = 5
+                    else:
+                        active -= 1
+                elif event.key == pygame.K_RETURN:
+                    if active == 1:
+                        paused = False
+                    elif active == 2:
+                        main(WIN)
+                    elif active == 5:
+                        pygame.quit()
 
 
 def main(WIN):
@@ -360,6 +394,8 @@ def main(WIN):
                     current_piece.rotation += 1
                     if not (valid_space(current_piece, grid)):
                         current_piece.rotation -= 1
+                elif event.key == pygame.K_ESCAPE:
+                    pause(WIN)
 
         shape_pos = convert_shape_format(current_piece)
 
@@ -396,7 +432,8 @@ def main_menu(WIN):
     run = True
     while run:
         WIN.fill((0, 0, 0))
-        draw_menu(WIN)
+        buttons = ['NEW GAME', 'SPEED: LOW', 'LEVEL: EASY', 'HIGH SCORES', 'EXIT']
+        draw_menu(WIN, 'MAIN MENU', buttons)
         pygame.display.update()
 
         for event in pygame.event.get():
@@ -413,9 +450,13 @@ def main_menu(WIN):
                         active = 5
                     else:
                         active -= 1
+                elif event.key == pygame.K_RETURN:
+                    if active == 1:
+                        main(WIN)
+                    elif active == 5:
+                        pygame.quit()
 
     pygame.quit()
-    main(WIN)
 
 
 if __name__ == '__main__':
