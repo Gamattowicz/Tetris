@@ -258,24 +258,42 @@ def draw_next_shape(shape, surface, score):
                      (preview_x + 5 * BLOCK_SIZE, preview_y + 5 * BLOCK_SIZE), width=3)
 
 
+def draw_menu_button(WIN, text, row):
+    rows_height = {
+        1: 150,
+        2: 100,
+        3: 50,
+        4: 0,
+        5: -50,
+    }
+
+    label = PREVIEW_FONT.render(text, 1, (255, 255, 255))
+    WIN.blit(label, (WIDTH / 2 - label.get_width() / 2, HEIGHT / 2 - rows_height[row]))
+
+
 def draw_menu(WIN):
     menu_text = TITLE_FONT.render('MAIN MENU', 1, (255, 255, 255))
     WIN.blit(menu_text, (WIDTH / 2 - menu_text.get_width() / 2, HEIGHT / 2 - 250))
 
-    play_text = PREVIEW_FONT.render('NEW GAME', 1, (255, 255, 255))
-    WIN.blit(play_text, (WIDTH / 2 - play_text.get_width() / 2, HEIGHT / 2 - 150))
+    draw_menu_button(WIN, 'NEW GAME', 1)
+    # play_text = PREVIEW_FONT.render('NEW GAME', 1, (255, 255, 255))
+    # WIN.blit(play_text, (WIDTH / 2 - play_text.get_width() / 2, HEIGHT / 2 - 150))
 
-    speed_text = PREVIEW_FONT.render('SPEED: LOW', 1, (255, 255, 255))
-    WIN.blit(speed_text, (WIDTH / 2 - speed_text.get_width() / 2, HEIGHT / 2 - 100))
+    draw_menu_button(WIN, 'SPEED: LOW', 2)
+    # speed_text = PREVIEW_FONT.render('SPEED: LOW', 1, (255, 255, 255))
+    # WIN.blit(speed_text, (WIDTH / 2 - speed_text.get_width() / 2, HEIGHT / 2 - 100))
 
-    level_text = PREVIEW_FONT.render('LEVEL: EASY', 1, (255, 255, 255))
-    WIN.blit(level_text, (WIDTH / 2 - level_text.get_width() / 2, HEIGHT / 2 - 50))
+    draw_menu_button(WIN, 'LEVEL: EASY', 3)
+    # level_text = PREVIEW_FONT.render('LEVEL: EASY', 1, (255, 255, 255))
+    # WIN.blit(level_text, (WIDTH / 2 - level_text.get_width() / 2, HEIGHT / 2 - 50))
 
-    score_text = PREVIEW_FONT.render('HIGH SCORES', 1, (255, 255, 255))
-    WIN.blit(score_text, (WIDTH / 2 - score_text.get_width() / 2, HEIGHT / 2))
+    draw_menu_button(WIN, 'HIGH SCORES', 4)
+    # score_text = PREVIEW_FONT.render('HIGH SCORES', 1, (255, 255, 255))
+    # WIN.blit(score_text, (WIDTH / 2 - score_text.get_width() / 2, HEIGHT / 2))
 
-    exit_text = PREVIEW_FONT.render('EXIT', 1, (255, 255, 255))
-    WIN.blit(exit_text, (WIDTH / 2 - exit_text.get_width() / 2, HEIGHT / 2 + 50))
+    draw_menu_button(WIN, 'EXIT', 5)
+    # exit_text = PREVIEW_FONT.render('EXIT', 1, (255, 255, 255))
+    # WIN.blit(exit_text, (WIDTH / 2 - exit_text.get_width() / 2, HEIGHT / 2 + 50))
 
 
 def clear_rows(grid, lock):
@@ -389,8 +407,6 @@ def main_menu(WIN):
                 run = False
 
     pygame.quit()
-
-
     main(WIN)
 
 
