@@ -19,6 +19,7 @@ START_BOX_Y = HEIGHT - BOX_HEIGHT
 TITLE_FONT = pygame.font.SysFont('arial', 60)
 PREVIEW_FONT = pygame.font.SysFont('arial', 20)
 SCORE_FONT = pygame.font.SysFont('arial', 25)
+LOST_FONT = pygame.font.SysFont('arial', 95)
 
 # SHAPE FORMATS
 S = [['.....',
@@ -221,6 +222,12 @@ def check_lost(positions):
     return False
 
 
+def draw_lost_text(WIN):
+    lost_text = LOST_FONT.render('YOU LOST!', 1, (255, 255, 255))
+
+    WIN.blit(lost_text, (WIDTH/2 - lost_text.get_width()/2, HEIGHT/2 - lost_text.get_height()/2))
+
+
 # draw preview next block
 def draw_next_shape(shape, surface, score):
     text = PREVIEW_FONT.render('Next Block', 1, (255, 255, 255))
@@ -343,6 +350,9 @@ def main(WIN):
         pygame.display.update()
 
         if check_lost(locked_pos):
+            draw_lost_text(WIN)
+            pygame.display.update()
+            pygame.time.delay(4000)
             run = False
 
     pygame.display.quit()
