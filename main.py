@@ -129,6 +129,8 @@ SHAPE_COLORS = [(0, 255, 0), (255, 0, 0), (0, 255, 255), (255, 255, 0),
                 (255, 165, 0), (0, 0, 255), (128, 0, 128)]
 active = 1
 speed = 1
+mode = 1
+extra_speed = 0
 
 
 class Piece(object):
@@ -327,6 +329,9 @@ def draw_menu(WIN, menu_title, buttons):
 
 
 def clear_rows(grid, lock):
+    global extra_speed
+    extra_speed = 0
+
     num_del = 0  # number of row to delete
     for i in range(len(grid) -1, -1, -1):
         row = grid[i]
@@ -339,6 +344,7 @@ def clear_rows(grid, lock):
                 except:
                     continue
     if num_del > 0:
+        extra_speed += num_del
         for key in sorted(list(lock), key=lambda x: x[1])[::-1]:
             x, y = key
             if y < ind:
@@ -394,16 +400,24 @@ def main(WIN):
     next_piece = get_shape()
     clock = pygame.time.Clock()
     fall_time = 0
-    fall_speed = 0.27
+    fall_speed = speeds[speed]
     score = 0
+    hardcore_time = 0
 
     run = True
     while run:
         grid = create_grid(locked_pos)
         fall_time += clock.get_rawtime()
+        if mode == 2:
+            hardcore_time += clock.get_rawtime()
         clock.tick()
 
-        if fall_time / 1000 > speeds[speed]:
+        if hardcore_time / 1000 > 5:
+            hardcore_time = 0
+            if fall_speed > 0.1:
+                fall_speed -= 0.005
+
+        if fall_time / 1000 > fall_speed:
             fall_time = 0
             current_piece.y += 1
             if not (valid_space(current_piece, grid)) and current_piece.y > 0:
@@ -451,6 +465,8 @@ def main(WIN):
             next_piece = get_shape()
             change_piece = False
             score += clear_rows(grid, locked_pos) * 10
+            if mode == 1 and fall_speed > 0.1:
+                fall_speed -= extra_speed * 0.005
 
         draw_window(WIN, grid)
         draw_next_shape(next_piece, WIN, score)
@@ -465,11 +481,14 @@ def main(WIN):
 def main_menu(WIN):
     global active
     global speed
+    global mode
     run = True
     speeds = ['LOW', 'MEDIUM', 'HIGH']
+    modes = ['ENDLESS (CONSTANT SPEED)', 'SURVIVAL (INCREASING SPEED WHEN SCORING POINTS)',
+             'HARDCORE (INCREASING SPEED OVER TIME)']
     while run:
         WIN.fill((0, 0, 0))
-        buttons = ['NEW GAME', f'SPEED: {speeds[speed]}', 'LEVEL: EASY', 'HIGH SCORES', 'EXIT']
+        buttons = ['NEW GAME', f'SPEED: {speeds[speed]}', f'MODE: {modes[mode]}', 'HIGH SCORES', 'EXIT']
         draw_menu(WIN, 'MAIN MENU', buttons)
         pygame.display.update()
 
@@ -495,6 +514,11 @@ def main_menu(WIN):
                             speed = 0
                         else:
                             speed += 1
+                    elif active == 3:
+                        if mode == 2:
+                            mode = 0
+                        else:
+                            mode += 1
                     elif active == 5:
                         pygame.quit()
 
