@@ -224,13 +224,48 @@ def check_lost(positions):
 
 
 def draw_lost_text(WIN):
-    lost_text = LOST_FONT.render('YOU LOST!', 1, (255, 255, 255))
+    global active
+    lost = True
 
-    WIN.blit(lost_text, (WIDTH/2 - lost_text.get_width()/2, HEIGHT/2 - lost_text.get_height()/2))
+    while lost:
+        WIN.fill((0, 0, 0))
+        lost_text = LOST_FONT.render('YOU LOST!', 1, (255, 255, 255))
+        WIN.blit(lost_text, (WIDTH / 2 - lost_text.get_width() / 2, HEIGHT / 3))
+
+        retry_text = TITLE_FONT.render('Do you want to play again?', 1, (255, 255, 255))
+        WIN.blit(retry_text, (WIDTH / 2 - retry_text.get_width() / 2, HEIGHT / 3 + 100))
+
+        retry_options = [('YES', 150), ('NO', - 150)]
+        for i, v in enumerate(retry_options, start=1):
+            if i == active:
+                label = TITLE_FONT.render(v[0], 1, (255, 0, 0))
+            else:
+                label = TITLE_FONT.render(v[0], 1, (255, 255, 255))
+            WIN.blit(label, (WIDTH / 2 - label.get_width() / 2 - v[1], HEIGHT / 3 + 200))
+        pygame.display.update()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RIGHT:
+                    if active == 2:
+                        active = 1
+                    else:
+                        active += 1
+                elif event.key == pygame.K_LEFT:
+                    if active == 1:
+                        active = 2
+                    else:
+                        active -= 1
+                elif event.key == pygame.K_RETURN:
+                    if active == 1:
+                        main(WIN)
+                    elif active == 2:
+                        pygame.quit()
 
 
-# draw preview next block
 def draw_next_shape(shape, surface, score):
+    # draw preview next block
     text = PREVIEW_FONT.render('Next Block', 1, (255, 255, 255))
 
     preview_x = START_BOX_X + BOX_WIDTH + 50
@@ -420,9 +455,6 @@ def main(WIN):
 
         if check_lost(locked_pos):
             draw_lost_text(WIN)
-            pygame.display.update()
-            pygame.time.delay(4000)
-            run = False
 
     pygame.display.quit()
 
