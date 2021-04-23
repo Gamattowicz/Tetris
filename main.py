@@ -127,6 +127,7 @@ T = [['.....',
 SHAPES = [S, Z, I, O, J, L, T]
 SHAPE_COLORS = [(0, 255, 0), (255, 0, 0), (0, 255, 255), (255, 255, 0),
                 (255, 165, 0), (0, 0, 255), (128, 0, 128)]
+active = 1
 
 
 class Piece(object):
@@ -258,7 +259,7 @@ def draw_next_shape(shape, surface, score):
                      (preview_x + 5 * BLOCK_SIZE, preview_y + 5 * BLOCK_SIZE), width=3)
 
 
-def draw_menu_button(WIN, text, row):
+def draw_menu_button(WIN, text, row, color):
     rows_height = {
         1: 150,
         2: 100,
@@ -267,33 +268,27 @@ def draw_menu_button(WIN, text, row):
         5: -50,
     }
 
-    label = PREVIEW_FONT.render(text, 1, (255, 255, 255))
-    WIN.blit(label, (WIDTH / 2 - label.get_width() / 2, HEIGHT / 2 - rows_height[row]))
+    # mouse_x, mouse_y = pygame.mouse.get_pos()
+    # label = PREVIEW_FONT.render(text, 1, (255, 255, 255))
+    # button_x = WIDTH / 2 - label.get_width() / 2
+    # if button_x < mouse_x < button_x + label.get_width() and HEIGHT / 2 - rows_height[row] < mouse_y < HEIGHT / 2 + rows_height[row]:
+    #     label = PREVIEW_FONT.render(text, 1, (255, 0, 0))
+
+    label = PREVIEW_FONT.render(text, 1, color)
+    button_x = WIDTH / 2 - label.get_width() / 2
+    WIN.blit(label, (button_x, HEIGHT / 2 - rows_height[row]))
 
 
 def draw_menu(WIN):
     menu_text = TITLE_FONT.render('MAIN MENU', 1, (255, 255, 255))
     WIN.blit(menu_text, (WIDTH / 2 - menu_text.get_width() / 2, HEIGHT / 2 - 250))
+    buttons = ['NEW GAME', 'SPEED: LOW', 'LEVEL: EASY', 'HIGH SCORES', 'EXIT']
 
-    draw_menu_button(WIN, 'NEW GAME', 1)
-    # play_text = PREVIEW_FONT.render('NEW GAME', 1, (255, 255, 255))
-    # WIN.blit(play_text, (WIDTH / 2 - play_text.get_width() / 2, HEIGHT / 2 - 150))
-
-    draw_menu_button(WIN, 'SPEED: LOW', 2)
-    # speed_text = PREVIEW_FONT.render('SPEED: LOW', 1, (255, 255, 255))
-    # WIN.blit(speed_text, (WIDTH / 2 - speed_text.get_width() / 2, HEIGHT / 2 - 100))
-
-    draw_menu_button(WIN, 'LEVEL: EASY', 3)
-    # level_text = PREVIEW_FONT.render('LEVEL: EASY', 1, (255, 255, 255))
-    # WIN.blit(level_text, (WIDTH / 2 - level_text.get_width() / 2, HEIGHT / 2 - 50))
-
-    draw_menu_button(WIN, 'HIGH SCORES', 4)
-    # score_text = PREVIEW_FONT.render('HIGH SCORES', 1, (255, 255, 255))
-    # WIN.blit(score_text, (WIDTH / 2 - score_text.get_width() / 2, HEIGHT / 2))
-
-    draw_menu_button(WIN, 'EXIT', 5)
-    # exit_text = PREVIEW_FONT.render('EXIT', 1, (255, 255, 255))
-    # WIN.blit(exit_text, (WIDTH / 2 - exit_text.get_width() / 2, HEIGHT / 2 + 50))
+    for i, v in enumerate(buttons, start=1):
+        if i == active:
+            draw_menu_button(WIN, v, i, (255, 0, 0))
+        else:
+            draw_menu_button(WIN, v, i, (255, 255, 255))
 
 
 def clear_rows(grid, lock):
@@ -397,14 +392,27 @@ def main(WIN):
 
 
 def main_menu(WIN):
+    global active
     run = True
     while run:
         WIN.fill((0, 0, 0))
         draw_menu(WIN)
         pygame.display.update()
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_DOWN:
+                    if active == 5:
+                        active = 1
+                    else:
+                        active += 1
+                elif event.key == pygame.K_UP:
+                    if active == 1:
+                        active = 5
+                    else:
+                        active -= 1
 
     pygame.quit()
     main(WIN)
