@@ -397,7 +397,11 @@ def pause(WIN):
 
 
 def save_score(score):
-    with open('scores.txt', 'a') as f:
+    with open('scores.txt', 'a+') as f:
+        f.seek(0)
+        data = f.read(100)
+        if len(data) > 0:
+            f.write('\n')
         f.write(str(score))
 
 
