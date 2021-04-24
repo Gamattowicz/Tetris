@@ -305,7 +305,7 @@ def draw_next_shape(shape, surface, score):
                      (preview_x + 5 * BLOCK_SIZE, preview_y + 5 * BLOCK_SIZE), width=3)
 
 
-def draw_menu_button(WIN, text, row, color):
+def draw_menu_button(WIN, text, row, color, place=False):
     rows_height = {
         1: 150,
         2: 100,
@@ -324,19 +324,23 @@ def draw_menu_button(WIN, text, row, color):
     # button_x = WIDTH / 2 - label.get_width() / 2
     # if button_x < mouse_x < button_x + label.get_width() and HEIGHT / 2 - rows_height[row] < mouse_y < HEIGHT / 2 + rows_height[row]:
     #     label = PREVIEW_FONT.render(text, 1, (255, 0, 0))
-
-    label = PREVIEW_FONT.render(text, 1, color)
+    if place:
+        label = PREVIEW_FONT.render(f'{str(row):^1}{text:^40}', 1, color)
+    else:
+        label = PREVIEW_FONT.render(text, 1, color)
     button_x = WIDTH / 2 - label.get_width() / 2
     WIN.blit(label, (button_x, HEIGHT / 2 - rows_height[row]))
 
 
-def draw_menu(WIN, menu_title, buttons, highlight=True):
+def draw_menu(WIN, menu_title, buttons, highlight=True, place=False):
     menu_text = TITLE_FONT.render(menu_title, 1, (255, 255, 255))
     WIN.blit(menu_text, (WIDTH / 2 - menu_text.get_width() / 2, HEIGHT / 2 - 250))
 
     for i, v in enumerate(buttons, start=1):
         if i == active and highlight:
             draw_menu_button(WIN, v, i, (255, 0, 0))
+        elif place:
+            draw_menu_button(WIN, v, i, (255, 255, 255), place=True)
         else:
             draw_menu_button(WIN, v, i, (255, 255, 255))
 
@@ -439,7 +443,7 @@ def get_leaderboard():
 
     while high_scores:
         WIN.fill((0, 0, 0))
-        draw_menu(WIN, 'LEADERBOARD', leaderboard, highlight=False)
+        draw_menu(WIN, 'LEADERBOARD', leaderboard, highlight=False, place=True)
         pygame.display.update()
 
         for event in pygame.event.get():
