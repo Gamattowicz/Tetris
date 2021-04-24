@@ -294,7 +294,7 @@ def draw_next_shape(shape, surface, score):
     surface.blit(label, (preview_x + 2.5 * BLOCK_SIZE - label.get_width() / 2, preview_y - 80 - BLOCK_SIZE))
 
     # draw max score
-    label = SCORE_FONT.render(f'MAX SCORE: {get_max_score()}', 1, (255, 255, 255))
+    label = SCORE_FONT.render(f'MAX SCORE: {get_max_score() if get_max_score() else 0}', 1, (255, 255, 255))
     surface.blit(label, (START_BOX_X/2 - label.get_width()/2, preview_y - 80 - BLOCK_SIZE))
 
     # draw timer
@@ -302,9 +302,8 @@ def draw_next_shape(shape, surface, score):
     formatted_mins = f'0{mins}' if mins < 10 else mins
     secs = timer - mins * 60
     formatted_secs = f'0{secs}' if secs < 10 else secs
-    label = SCORE_FONT.render(f'Timer {format_timer()}', 1, (255, 255, 255))
+    label = SCORE_FONT.render(f'Timer: {format_timer()}', 1, (255, 255, 255))
     surface.blit(label, (START_BOX_X/2 - label.get_width()/2, preview_y - 40))
-
 
     for i, row in enumerate(format):
         for j, column in enumerate(row):
@@ -329,12 +328,7 @@ def draw_menu_button(WIN, text, row, color, place=False):
         2: 100,
         3: 50,
         4: 0,
-        5: -50,
-        6: -100,
-        7: -150,
-        8: -200,
-        9: -250,
-        10: -300
+        5: -50
     }
 
     # mouse_x, mouse_y = pygame.mouse.get_pos()
@@ -432,36 +426,81 @@ def pause(WIN):
 
 def get_max_score():
     rows = []
-    with open('scores.txt', 'r') as f:
+    with open('scores.csv', 'a+') as f:
         reader = csv.reader(f, delimiter=' ')
         for row in reader:
             rows.append(row[0])
-    max_score = max(rows)
-    return max_score
+    if len(rows) > 0:
+        max_score = max(rows)
+        return max_score
 
 
 def save_score(score):
-    with open('scores.txt', 'a+') as f:
+    with open('scores.csv', 'a+') as f:
         f.seek(0)
         data = f.read(100)
-        if len(data) > 0:
+        if len(data) == 0:
+            f.write('No.,Score,Time\n')
+        else:
             f.write('\n')
-        f.write(f'{str(score)} {format_timer()}')
+        f.write(f'{str(score)},{format_timer()}')
+
+
+def draw_leaderboard(WIN, leaderboard):
+    rows_height = {
+        0: 150,
+        1: 100,
+        2: 50,
+        3: 0,
+        4: -50,
+        5: -100,
+        6: -150,
+        7: -200,
+        8: -250,
+        9: -300
+    }
+    menu_text = TITLE_FONT.render('LEADERBOARD', 1, (255, 255, 255))
+    WIN.blit(menu_text, (WIDTH / 2 - menu_text.get_width() / 2, HEIGHT / 2 - 250))
+
+    width_btn = -100
+    height_btn = 0
+    for i, v in enumerate(leaderboard):
+        for index, j in enumerate(v):
+            # draw title row
+            if i == 0:
+                label = PREVIEW_FONT.render(j, 1, (255, 255, 255))
+                button_x = WIDTH / 2 - label.get_width() / 2
+                WIN.blit(label, (button_x + width_btn, HEIGHT / 3))
+            else:
+                # draw place of score
+                if index == 0:
+                    label = PREVIEW_FONT.render(str(i), 1, (255, 255, 255))
+                    button_x = WIDTH / 2 - label.get_width() / 2
+                    WIN.blit(label, (button_x + width_btn, HEIGHT / 3 + height_btn))
+                    width_btn += 100
+                # draw score and time
+                label = PREVIEW_FONT.render(j, 1, (255, 255, 255))
+                button_x = WIDTH / 2 - label.get_width() / 2
+                WIN.blit(label, (button_x + width_btn, HEIGHT / 3 + height_btn))
+            width_btn += 100
+        width_btn = -100
+        height_btn += 50
 
 
 def get_leaderboard():
     rows = []
-    with open('scores.txt', 'r') as f:
-        reader = csv.reader(f, delimiter=' ')
+    with open('scores.csv', 'a+') as f:
+        f.seek(0)
+        reader = csv.reader(f, delimiter=',')
         for row in reader:
-            rows.append(row[0])
-    leaderboard = sorted(rows, reverse=True)[:10]
+            rows.append(row)
+    leaderboard = sorted(rows, reverse=True)[:11]
 
     high_scores = True
 
     while high_scores:
         WIN.fill((0, 0, 0))
-        draw_menu(WIN, 'LEADERBOARD', leaderboard, highlight=False, place=True)
+        draw_leaderboard(WIN, leaderboard)
         pygame.display.update()
 
         for event in pygame.event.get():
