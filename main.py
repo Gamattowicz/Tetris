@@ -1,5 +1,6 @@
 import pygame
 import random
+import sys
 
 # SIZE OF SCREEN
 WIDTH, HEIGHT = 800, 700
@@ -249,6 +250,7 @@ def draw_lost_text(WIN):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
+                sys.exit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RIGHT:
                     if active == 2:
@@ -265,6 +267,7 @@ def draw_lost_text(WIN):
                         main(WIN)
                     elif active == 2:
                         pygame.quit()
+                        sys.exit()
 
 
 def draw_next_shape(shape, surface, score):
@@ -367,6 +370,7 @@ def pause(WIN):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
+                sys.exit()
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     paused = False
@@ -389,6 +393,7 @@ def pause(WIN):
                         main_menu(WIN)
                     elif active == 5:
                         pygame.quit()
+                        sys.exit()
 
 
 def main(WIN):
@@ -426,7 +431,9 @@ def main(WIN):
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                pygame.quit()
                 run = False
+                sys.exit()
 
             # Key handling
             if event.type == pygame.KEYDOWN:
@@ -494,7 +501,9 @@ def main_menu(WIN):
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                pygame.quit()
                 run = False
+                sys.exit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_DOWN:
                     if active == 5:
@@ -521,8 +530,10 @@ def main_menu(WIN):
                             mode += 1
                     elif active == 5:
                         pygame.quit()
+                        sys.exit()
 
     pygame.quit()
+    sys.exit()
 
 
 if __name__ == '__main__':
