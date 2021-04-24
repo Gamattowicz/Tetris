@@ -396,6 +396,11 @@ def pause(WIN):
                         sys.exit()
 
 
+def save_score(score):
+    with open('scores.txt', 'a') as f:
+        f.write(str(score))
+
+
 def main(WIN):
     locked_pos = {}
     grid = create_grid(locked_pos)
@@ -480,7 +485,9 @@ def main(WIN):
         pygame.display.update()
 
         if check_lost(locked_pos):
+            save_score(score)
             draw_lost_text(WIN)
+
 
     pygame.display.quit()
 
