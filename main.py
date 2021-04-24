@@ -312,6 +312,11 @@ def draw_menu_button(WIN, text, row, color):
         3: 50,
         4: 0,
         5: -50,
+        6: -100,
+        7: -150,
+        8: -200,
+        9: -250,
+        10: -300
     }
 
     # mouse_x, mouse_y = pygame.mouse.get_pos()
@@ -325,12 +330,12 @@ def draw_menu_button(WIN, text, row, color):
     WIN.blit(label, (button_x, HEIGHT / 2 - rows_height[row]))
 
 
-def draw_menu(WIN, menu_title, buttons):
+def draw_menu(WIN, menu_title, buttons, highlight=True):
     menu_text = TITLE_FONT.render(menu_title, 1, (255, 255, 255))
     WIN.blit(menu_text, (WIDTH / 2 - menu_text.get_width() / 2, HEIGHT / 2 - 250))
 
     for i, v in enumerate(buttons, start=1):
-        if i == active:
+        if i == active and highlight:
             draw_menu_button(WIN, v, i, (255, 0, 0))
         else:
             draw_menu_button(WIN, v, i, (255, 255, 255))
@@ -396,6 +401,8 @@ def pause(WIN):
                         main(WIN)
                     elif active == 3:
                         main_menu(WIN)
+                    elif active == 4:
+                        get_leaderboard()
                     elif active == 5:
                         pygame.quit()
                         sys.exit()
@@ -418,6 +425,30 @@ def save_score(score):
         if len(data) > 0:
             f.write('\n')
         f.write(str(score))
+
+
+def get_leaderboard():
+    rows = []
+    with open('scores.txt', 'r') as f:
+        reader = csv.reader(f, delimiter=' ')
+        for row in reader:
+            rows.append(row[0])
+    leaderboard = sorted(rows, reverse=True)[:10]
+
+    high_scores = True
+
+    while high_scores:
+        WIN.fill((0, 0, 0))
+        draw_menu(WIN, 'LEADERBOARD', leaderboard, highlight=False)
+        pygame.display.update()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    high_scores = False
 
 
 def main(WIN):
@@ -504,9 +535,9 @@ def main(WIN):
         pygame.display.update()
 
         if check_lost(locked_pos):
-            save_score(score)
+            if score > 0:
+                save_score(score)
             draw_lost_text(WIN)
-
 
     pygame.display.quit()
 
@@ -521,7 +552,7 @@ def main_menu(WIN):
              'HARDCORE (INCREASING SPEED OVER TIME)']
     while run:
         WIN.fill((0, 0, 0))
-        buttons = ['NEW GAME', f'SPEED: {speeds[speed]}', f'MODE: {modes[mode]}', 'HIGH SCORES', 'EXIT']
+        buttons = ['NEW GAME', f'SPEED: {speeds[speed]}', f'MODE: {modes[mode]}', 'LEADERBOARD', 'EXIT']
         draw_menu(WIN, 'MAIN MENU', buttons)
         pygame.display.update()
 
@@ -554,6 +585,8 @@ def main_menu(WIN):
                             mode = 0
                         else:
                             mode += 1
+                    elif active == 4:
+                        get_leaderboard()
                     elif active == 5:
                         pygame.quit()
                         sys.exit()
