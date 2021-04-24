@@ -134,6 +134,7 @@ speed = 1
 mode = 1
 extra_speed = 0
 timer = 0
+speed_level = 1
 
 
 class Piece(object):
@@ -271,6 +272,7 @@ def draw_lost_text(WIN):
                         pygame.quit()
                         sys.exit()
 
+
 def format_timer():
     mins = timer // 60
     formatted_mins = f'0{mins}' if mins < 10 else mins
@@ -279,6 +281,7 @@ def format_timer():
     formatted_timer = f'{formatted_mins}:{formatted_secs}'
 
     return formatted_timer
+
 
 def draw_next_shape(shape, surface, score):
     # draw preview next block
@@ -298,12 +301,12 @@ def draw_next_shape(shape, surface, score):
     surface.blit(label, (START_BOX_X/2 - label.get_width()/2, preview_y - 80 - BLOCK_SIZE))
 
     # draw timer
-    mins = timer // 60
-    formatted_mins = f'0{mins}' if mins < 10 else mins
-    secs = timer - mins * 60
-    formatted_secs = f'0{secs}' if secs < 10 else secs
     label = SCORE_FONT.render(f'Timer: {format_timer()}', 1, (255, 255, 255))
     surface.blit(label, (START_BOX_X/2 - label.get_width()/2, preview_y - 40))
+
+    # draw speed value
+    label = SCORE_FONT.render(f'Speed level: {speed_level}', 1, (255, 255, 255))
+    surface.blit(label, (START_BOX_X/2 - label.get_width()/2, preview_y + 40))
 
     for i, row in enumerate(format):
         for j, column in enumerate(row):
@@ -322,7 +325,7 @@ def draw_next_shape(shape, surface, score):
                      (preview_x + 5 * BLOCK_SIZE, preview_y + 5 * BLOCK_SIZE), width=3)
 
 
-def draw_menu_button(WIN, text, row, color, place=False):
+def draw_menu_button(WIN, text, row, color):
     rows_height = {
         1: 150,
         2: 100,
@@ -331,28 +334,18 @@ def draw_menu_button(WIN, text, row, color, place=False):
         5: -50
     }
 
-    # mouse_x, mouse_y = pygame.mouse.get_pos()
-    # label = PREVIEW_FONT.render(text, 1, (255, 255, 255))
-    # button_x = WIDTH / 2 - label.get_width() / 2
-    # if button_x < mouse_x < button_x + label.get_width() and HEIGHT / 2 - rows_height[row] < mouse_y < HEIGHT / 2 + rows_height[row]:
-    #     label = PREVIEW_FONT.render(text, 1, (255, 0, 0))
-    if place:
-        label = PREVIEW_FONT.render(f'{str(row):^1}{text:^40}', 1, color)
-    else:
-        label = PREVIEW_FONT.render(text, 1, color)
+    label = PREVIEW_FONT.render(text, 1, color)
     button_x = WIDTH / 2 - label.get_width() / 2
     WIN.blit(label, (button_x, HEIGHT / 2 - rows_height[row]))
 
 
-def draw_menu(WIN, menu_title, buttons, highlight=True, place=False):
+def draw_menu(WIN, menu_title, buttons):
     menu_text = TITLE_FONT.render(menu_title, 1, (255, 255, 255))
     WIN.blit(menu_text, (WIDTH / 2 - menu_text.get_width() / 2, HEIGHT / 2 - 250))
 
     for i, v in enumerate(buttons, start=1):
-        if i == active and highlight:
+        if i == active:
             draw_menu_button(WIN, v, i, (255, 0, 0))
-        elif place:
-            draw_menu_button(WIN, v, i, (255, 255, 255), place=True)
         else:
             draw_menu_button(WIN, v, i, (255, 255, 255))
 
@@ -447,18 +440,6 @@ def save_score(score):
 
 
 def draw_leaderboard(WIN, leaderboard):
-    rows_height = {
-        0: 150,
-        1: 100,
-        2: 50,
-        3: 0,
-        4: -50,
-        5: -100,
-        6: -150,
-        7: -200,
-        8: -250,
-        9: -300
-    }
     menu_text = TITLE_FONT.render('LEADERBOARD', 1, (255, 255, 255))
     WIN.blit(menu_text, (WIDTH / 2 - menu_text.get_width() / 2, HEIGHT / 2 - 250))
 
@@ -514,6 +495,7 @@ def get_leaderboard():
 
 def main(WIN):
     global timer
+    global speed_level
     locked_pos = {}
     grid = create_grid(locked_pos)
     speeds = [0.45, 0.3, 0.15]
@@ -544,6 +526,7 @@ def main(WIN):
             hardcore_time = 0
             if fall_speed > 0.1:
                 fall_speed -= 0.005
+                speed_level += 1
 
         if fall_time / 1000 > fall_speed:
             fall_time = 0
@@ -597,6 +580,7 @@ def main(WIN):
             score += clear_rows(grid, locked_pos) * 10
             if mode == 1 and fall_speed > 0.1:
                 fall_speed -= extra_speed * 0.005
+                speed_level += extra_speed
 
         draw_window(WIN, grid)
         draw_next_shape(next_piece, WIN, score)
