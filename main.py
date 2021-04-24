@@ -1,6 +1,7 @@
 import pygame
 import random
 import sys
+import csv
 
 # SIZE OF SCREEN
 WIDTH, HEIGHT = 800, 700
@@ -283,6 +284,10 @@ def draw_next_shape(shape, surface, score):
     label = SCORE_FONT.render(f'SCORE: {score}', 1, (255, 255, 255))
     surface.blit(label, (preview_x + 2.5 * BLOCK_SIZE - label.get_width() / 2, preview_y - 80 - BLOCK_SIZE))
 
+    # draw max score
+    label = SCORE_FONT.render(f'MAX SCORE: {get_max_score()}', 1, (255, 255, 255))
+    surface.blit(label, (START_BOX_X/2 - label.get_width()/2, preview_y - 80 - BLOCK_SIZE))
+
     for i, row in enumerate(format):
         for j, column in enumerate(row):
             if column == '0':
@@ -394,6 +399,16 @@ def pause(WIN):
                     elif active == 5:
                         pygame.quit()
                         sys.exit()
+
+
+def get_max_score():
+    rows = []
+    with open('scores.txt', 'r') as f:
+        reader = csv.reader(f, delimiter=' ')
+        for row in reader:
+            rows.append(row[0])
+    max_score = max(rows)
+    return max_score
 
 
 def save_score(score):
