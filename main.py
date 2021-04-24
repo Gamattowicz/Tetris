@@ -133,6 +133,7 @@ active = 1
 speed = 1
 mode = 1
 extra_speed = 0
+timer = 0
 
 
 class Piece(object):
@@ -287,6 +288,15 @@ def draw_next_shape(shape, surface, score):
     # draw max score
     label = SCORE_FONT.render(f'MAX SCORE: {get_max_score()}', 1, (255, 255, 255))
     surface.blit(label, (START_BOX_X/2 - label.get_width()/2, preview_y - 80 - BLOCK_SIZE))
+
+    # draw timer
+    mins = timer // 60
+    formatted_mins = f'0{mins}' if mins < 10 else mins
+    secs = timer - mins * 60
+    formatted_secs = f'0{secs}' if secs < 10 else secs
+    label = SCORE_FONT.render(f'Timer {formatted_mins}:{formatted_secs}', 1, (255, 255, 255))
+    surface.blit(label, (START_BOX_X/2 - label.get_width()/2, preview_y - 40))
+
 
     for i, row in enumerate(format):
         for j, column in enumerate(row):
@@ -456,6 +466,7 @@ def get_leaderboard():
 
 
 def main(WIN):
+    global timer
     locked_pos = {}
     grid = create_grid(locked_pos)
     speeds = [0.45, 0.3, 0.15]
@@ -467,14 +478,20 @@ def main(WIN):
     fall_speed = speeds[speed]
     score = 0
     hardcore_time = 0
+    time_elapsed = 0
 
     run = True
     while run:
         grid = create_grid(locked_pos)
         fall_time += clock.get_rawtime()
+        time_elapsed += clock.get_rawtime()
         if mode == 2:
             hardcore_time += clock.get_rawtime()
         clock.tick()
+
+        if time_elapsed / 1000 > 1:
+            time_elapsed = 0
+            timer += 1
 
         if hardcore_time / 1000 > 5:
             hardcore_time = 0
