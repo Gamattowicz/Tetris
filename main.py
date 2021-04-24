@@ -271,6 +271,14 @@ def draw_lost_text(WIN):
                         pygame.quit()
                         sys.exit()
 
+def format_timer():
+    mins = timer // 60
+    formatted_mins = f'0{mins}' if mins < 10 else mins
+    secs = timer - mins * 60
+    formatted_secs = f'0{secs}' if secs < 10 else secs
+    formatted_timer = f'{formatted_mins}:{formatted_secs}'
+
+    return formatted_timer
 
 def draw_next_shape(shape, surface, score):
     # draw preview next block
@@ -294,7 +302,7 @@ def draw_next_shape(shape, surface, score):
     formatted_mins = f'0{mins}' if mins < 10 else mins
     secs = timer - mins * 60
     formatted_secs = f'0{secs}' if secs < 10 else secs
-    label = SCORE_FONT.render(f'Timer {formatted_mins}:{formatted_secs}', 1, (255, 255, 255))
+    label = SCORE_FONT.render(f'Timer {format_timer()}', 1, (255, 255, 255))
     surface.blit(label, (START_BOX_X/2 - label.get_width()/2, preview_y - 40))
 
 
@@ -438,7 +446,7 @@ def save_score(score):
         data = f.read(100)
         if len(data) > 0:
             f.write('\n')
-        f.write(str(score))
+        f.write(f'{str(score)} {format_timer()}')
 
 
 def get_leaderboard():
