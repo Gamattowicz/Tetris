@@ -139,6 +139,9 @@ timer = 0
 speed_level = 30
 start_speed_level = 30
 combo = 0
+max_combo = 0
+fall_speed = 0.45 - start_speed_level * 0.005
+start_fall_speed = 0.45 - start_speed_level * 0.005
 
 
 class Piece(object):
@@ -265,6 +268,7 @@ def draw_lost_text(WIN):
                     if active == 1:
                         active = 2
                     else:
+
                         active -= 1
                 elif event.key == pygame.K_RETURN:
                     if active == 1:
@@ -313,6 +317,10 @@ def draw_next_shape(shape, surface, score):
     label = SCORE_FONT.render(f'COMBO: {combo}', True, (255, 255, 255))
     surface.blit(label, (START_BOX_X/2 - label.get_width()/2, preview_y + 100))
 
+    # max combo
+    label = SCORE_FONT.render(f'MAX COMBO: {max_combo}', True, (255, 255, 255))
+    surface.blit(label, (START_BOX_X/2 - label.get_width()/2, preview_y + 170))
+
     for i, row in enumerate(format):
         for j, column in enumerate(row):
             if column == '0':
@@ -358,6 +366,7 @@ def draw_menu(WIN, menu_title, buttons):
 def clear_rows(grid, lock):
     global extra_speed
     global combo
+    global max_combo
     extra_speed = 0
 
     num_del = 0  # number of row to delete
@@ -374,6 +383,7 @@ def clear_rows(grid, lock):
     if num_del > 0:
         extra_speed += num_del
         combo += num_del
+        max_combo = combo if combo > max_combo else max_combo
         for key in sorted(list(lock), key=lambda x: x[1])[::-1]:
             x, y = key
             if y < ind:
@@ -416,6 +426,7 @@ def pause(WIN):
                     if active == 1:
                         paused = False
                     elif active == 2:
+                        restart_stats()
                         main(WIN)
                     elif active == 3:
                         main_menu(WIN)
@@ -446,25 +457,25 @@ def save_score(score):
         f.seek(0)
         data = f.read(100)
         if len(data) == 0:
-            f.write('No.,Score,Time\n')
+            f.write('No.,Score,Time,Speed Level,Max Combo\n')
         else:
             f.write('\n')
-        f.write(f'{str(score)},{format_timer()}')
+        f.write(f'{str(score)},{format_timer()},{speed_level},{max_combo}')
 
 
 def draw_leaderboard(WIN, leaderboard):
     menu_text = TITLE_FONT.render('LEADERBOARD', True, (255, 255, 255))
-    WIN.blit(menu_text, (WIDTH / 2 - menu_text.get_width() / 2, HEIGHT / 2 - 250))
+    WIN.blit(menu_text, (WIDTH / 2 - menu_text.get_width() / 2, HEIGHT / 2 - 350))
 
-    width_btn = -100
-    height_btn = 0
+    width_btn = -200
+    height_btn = -100
     for i, v in enumerate(leaderboard):
         for index, j in enumerate(v):
             # draw title row
             if i == 0:
                 label = PREVIEW_FONT.render(j, True, (255, 255, 255))
                 button_x = WIDTH / 2 - label.get_width() / 2
-                WIN.blit(label, (button_x + width_btn, HEIGHT / 3))
+                WIN.blit(label, (button_x + width_btn, HEIGHT / 3 - 100))
             else:
                 # draw place of score
                 if index == 0:
@@ -477,7 +488,7 @@ def draw_leaderboard(WIN, leaderboard):
                 button_x = WIDTH / 2 - label.get_width() / 2
                 WIN.blit(label, (button_x + width_btn, HEIGHT / 3 + height_btn))
             width_btn += 100
-        width_btn = -100
+        width_btn = -200
         height_btn += 50
 
 
@@ -506,9 +517,21 @@ def get_leaderboard():
                     high_scores = False
 
 
+def restart_stats():
+    global timer
+    global speed_level
+    global max_combo
+    global fall_speed
+    timer = 0
+    max_combo = 0
+    speed_level = start_speed_level
+    fall_speed = start_fall_speed
+
+
 def main(WIN):
     global timer
     global speed_level
+    global fall_speed
     locked_pos = {}
     grid = create_grid(locked_pos)
     change_piece = False
@@ -516,8 +539,6 @@ def main(WIN):
     next_piece = get_shape()
     clock = pygame.time.Clock()
     fall_time = 0
-    fall_speed = 0.45 - speed_level * 0.005
-    start_fall_speed = 0.45 - speed_level * 0.005
     score = 0
     hardcore_time = 0
     time_elapsed = 0
@@ -591,6 +612,7 @@ def main(WIN):
             next_piece = get_shape()
             change_piece = False
             score += clear_rows(grid, locked_pos) * 10
+            print(fall_speed)
             if mode == 1 and fall_speed > 0.1:
                 fall_speed -= extra_speed * 0.005
                 speed_level += extra_speed
@@ -600,11 +622,9 @@ def main(WIN):
         pygame.display.update()
 
         if check_lost(locked_pos):
-            timer = 0
-            speed_level = start_speed_level
-            fall_speed = start_fall_speed
             if score > 0:
                 save_score(score)
+            restart_stats()
             draw_lost_text(WIN)
 
     pygame.display.quit()
@@ -616,6 +636,8 @@ def main_menu(WIN):
     global mode
     global speed_level
     global start_speed_level
+    global start_fall_speed
+    global fall_speed
     run = True
     speeds = ['LOW', 'MEDIUM', 'HIGH']
     modes = ['ENDLESS (CONSTANT SPEED)', 'SURVIVAL (INCREASING SPEED WHEN SCORING POINTS)',
@@ -644,16 +666,23 @@ def main_menu(WIN):
                         active -= 1
                 elif event.key == pygame.K_RETURN:
                     if active == 1:
+                        restart_stats()
                         main(WIN)
                     elif active == 2:
                         if speed == 2:
                             speed = 0
                             speed_level = 1
                             start_speed_level = 1
+                            fall_speed = 0.45 - start_speed_level * 0.005
+                            start_fall_speed = 0.45 - start_speed_level * 0.005
+                            print(start_speed_level, start_fall_speed, fall_speed)
                         else:
                             speed += 1
                             speed_level += 30
                             start_speed_level += 30
+                            fall_speed = 0.45 - start_speed_level * 0.005
+                            start_fall_speed = 0.45 - start_speed_level * 0.005
+                            print(start_speed_level, start_fall_speed, fall_speed)
                     elif active == 3:
                         if mode == 2:
                             mode = 0
