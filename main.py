@@ -3,6 +3,7 @@ import random
 import sys
 import csv
 from grid import create_grid, draw_grid
+from score import get_score_factor, save_score, get_max_score
 
 # SIZE OF SCREEN
 WIDTH, HEIGHT = 800, 700
@@ -416,32 +417,6 @@ def pause(WIN):
                         sys.exit()
 
 
-def get_max_score():
-    rows = []
-    with open('scores.csv', 'a+') as f:
-        f.seek(0)
-        reader = csv.reader(f, delimiter=',')
-        for row in reader:
-            try:
-                rows.append(int(row[0]))
-            except:
-                continue
-    if len(rows) > 0:
-        max_score = sorted(rows, reverse=True)
-        return max_score[0]
-
-
-def save_score(score):
-    with open('scores.csv', 'a+') as f:
-        f.seek(0)
-        data = f.read(100)
-        if len(data) == 0:
-            f.write('No.,Score,Time,Speed Level,Max Combo\n')
-        else:
-            f.write('\n')
-        f.write(f'{str(score)},{format_timer()},{speed_level},{max_combo}')
-
-
 def draw_leaderboard(WIN, leaderboard):
     menu_text = TITLE_FONT.render('LEADERBOARD', True, (255, 255, 255))
     WIN.blit(menu_text, (WIDTH / 2 - menu_text.get_width() / 2, HEIGHT / 2 - 350))
@@ -494,11 +469,6 @@ def get_leaderboard():
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     high_scores = False
-
-
-def get_score_factor():
-    score_factor = speed_level + combo * 10
-    return score_factor
 
 
 def restart_stats():
@@ -595,7 +565,7 @@ def main(WIN):
             current_piece = next_piece
             next_piece = get_shape()
             change_piece = False
-            score += clear_rows(grid, locked_pos) * get_score_factor()
+            score += clear_rows(grid, locked_pos) * get_score_factor(speed_level, combo)
             if mode == 1 and fall_speed > 0.1:
                 fall_speed -= extra_speed * 0.005
                 speed_level += extra_speed
@@ -606,7 +576,7 @@ def main(WIN):
 
         if check_lost(locked_pos):
             if score > 0:
-                save_score(score)
+                save_score(score, format_timer(), speed_level, max_combo)
             restart_stats()
             draw_lost_text(WIN)
 
