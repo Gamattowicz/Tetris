@@ -5,6 +5,7 @@ from grid import create_grid, draw_grid
 from score import get_score_factor, save_score, get_max_score
 from leaderboard import get_leaderboard
 from menu import draw_menu, pause
+from validation import valid_space, check_lost
 
 # SIZE OF SCREEN
 WIDTH, HEIGHT = 800, 700
@@ -175,19 +176,6 @@ def convert_shape_format(block):
     return positions
 
 
-def valid_space(shape, grid):
-    free_pos = [[(j, i) for j in range(10) if grid[i][j] == (0, 0, 0)] for i in range(20)]
-    free_pos = [j for sub in free_pos for j in sub]
-
-    formatted = convert_shape_format(shape)
-
-    for pos in formatted:
-        if pos not in free_pos:
-            if pos[1] > -1:
-                return False
-    return True
-
-
 def draw_window(surface, grid):
     surface.fill((0, 0, 0))
 
@@ -205,14 +193,6 @@ def draw_window(surface, grid):
     pygame.draw.rect(surface, (255, 0, 0), (START_BOX_X, START_BOX_Y, BOX_WIDTH, BOX_HEIGHT), 5)
 
     draw_grid(surface, grid, START_BOX_X, START_BOX_Y, BLOCK_SIZE, BOX_WIDTH, BOX_HEIGHT)
-
-
-def check_lost(positions):
-    for pos in positions:
-        x, y = pos
-        if y < 1:
-            return True
-    return False
 
 
 def draw_lost_text(WIN):
@@ -399,7 +379,7 @@ def main(WIN):
         if fall_time / 1000 > fall_speed:
             fall_time = 0
             current_piece.y += 1
-            if not (valid_space(current_piece, grid)) and current_piece.y > 0:
+            if not (valid_space(current_piece, grid, convert_shape_format)) and current_piece.y > 0:
                 current_piece.y -= 1
                 change_piece = True
 
@@ -413,19 +393,19 @@ def main(WIN):
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
                     current_piece.x -= 1
-                    if not (valid_space(current_piece, grid)):
+                    if not (valid_space(current_piece, grid, convert_shape_format)):
                         current_piece.x += 1
                 elif event.key == pygame.K_RIGHT:
                     current_piece.x += 1
-                    if not (valid_space(current_piece, grid)):
+                    if not (valid_space(current_piece, grid, convert_shape_format)):
                         current_piece.x -= 1
                 elif event.key == pygame.K_DOWN:
                     current_piece.y += 1
-                    if not (valid_space(current_piece, grid)):
+                    if not (valid_space(current_piece, grid, convert_shape_format)):
                         current_piece.y -= 1
                 elif event.key == pygame.K_UP:
                     current_piece.rotation += 1
-                    if not (valid_space(current_piece, grid)):
+                    if not (valid_space(current_piece, grid, convert_shape_format)):
                         current_piece.rotation -= 1
                 elif event.key == pygame.K_ESCAPE:
                     pause(WIN, active, WIDTH, HEIGHT, restart_stats, main, main_menu, get_leaderboard)

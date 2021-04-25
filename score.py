@@ -23,6 +23,7 @@ def save_score(score, timer, speed_level, max_combo):
         data = f.read(100)
         if len(data) == 0:
             f.write('No.,Score,Time,Speed Level,Max Combo, Date\n')
+
         else:
             f.write('\n')
         f.write(f'{str(score)},{timer},{speed_level},{max_combo},{date.today()}')
