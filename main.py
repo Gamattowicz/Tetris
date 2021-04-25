@@ -1,9 +1,9 @@
 import pygame
 import random
 import sys
-import csv
 from grid import create_grid, draw_grid
 from score import get_score_factor, save_score, get_max_score
+from leaderboard import get_leaderboard
 
 # SIZE OF SCREEN
 WIDTH, HEIGHT = 800, 700
@@ -411,64 +411,10 @@ def pause(WIN):
                     elif active == 3:
                         main_menu(WIN)
                     elif active == 4:
-                        get_leaderboard()
+                        get_leaderboard(WIN, WIDTH, HEIGHT)
                     elif active == 5:
                         pygame.quit()
                         sys.exit()
-
-
-def draw_leaderboard(WIN, leaderboard):
-    menu_text = TITLE_FONT.render('LEADERBOARD', True, (255, 255, 255))
-    WIN.blit(menu_text, (WIDTH / 2 - menu_text.get_width() / 2, HEIGHT / 2 - 350))
-
-    width_btn = -200
-    height_btn = -100
-    for i, v in enumerate(leaderboard):
-        for index, j in enumerate(v):
-            # draw title row
-            if i == 0:
-                label = PREVIEW_FONT.render(j, True, (255, 255, 255))
-                button_x = WIDTH / 2 - label.get_width() / 2
-                WIN.blit(label, (button_x + width_btn, HEIGHT / 3 - 100))
-            else:
-                # draw place of score
-                if index == 0:
-                    label = PREVIEW_FONT.render(str(i), True, (255, 255, 255))
-                    button_x = WIDTH / 2 - label.get_width() / 2
-                    WIN.blit(label, (button_x + width_btn, HEIGHT / 3 + height_btn))
-                    width_btn += 100
-                # draw score and time
-                label = PREVIEW_FONT.render(j, True, (255, 255, 255))
-                button_x = WIDTH / 2 - label.get_width() / 2
-                WIN.blit(label, (button_x + width_btn, HEIGHT / 3 + height_btn))
-            width_btn += 100
-        width_btn = -200
-        height_btn += 50
-
-
-def get_leaderboard():
-    rows = []
-    with open('scores.csv', 'a+') as f:
-        f.seek(0)
-        reader = csv.reader(f, delimiter=',')
-        for row in reader:
-            rows.append(row)
-    leaderboard = sorted(rows, reverse=True)[:11]
-
-    high_scores = True
-
-    while high_scores:
-        WIN.fill((0, 0, 0))
-        draw_leaderboard(WIN, leaderboard)
-        pygame.display.update()
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    high_scores = False
 
 
 def restart_stats():
@@ -640,7 +586,7 @@ def main_menu(WIN):
                         else:
                             mode += 1
                     elif active == 4:
-                        get_leaderboard()
+                        get_leaderboard(WIN, WIDTH, HEIGHT)
                     elif active == 5:
                         pygame.quit()
                         sys.exit()
