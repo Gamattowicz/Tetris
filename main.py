@@ -129,12 +129,15 @@ T = [['.....',
 SHAPES = [S, Z, I, O, J, L, T]
 SHAPE_COLORS = [(0, 255, 0), (255, 0, 0), (0, 255, 255), (255, 255, 0),
                 (255, 165, 0), (0, 0, 255), (128, 0, 128)]
+
+# GLOBAL VARIABLES
 active = 1
 speed = 1
 mode = 1
 extra_speed = 0
 timer = 0
 speed_level = 30
+combo = 0
 
 
 class Piece(object):
@@ -158,9 +161,6 @@ def create_grid(locked_pos={}):
 
 
 def draw_grid(surface, grid):
-    sx = START_BOX_X
-    sy = START_BOX_Y
-
     for i in range(len(grid)):
         pygame.draw.line(surface, (128, 128, 128), (START_BOX_X, START_BOX_Y + i * BLOCK_SIZE),
                          (START_BOX_X + BOX_WIDTH,
@@ -207,7 +207,7 @@ def draw_window(surface, grid):
     surface.fill((0, 0, 0))
 
     # draw title over the box
-    title = TITLE_FONT.render('TETRIS', 1, (255, 255, 255))
+    title = TITLE_FONT.render('TETRIS', True, (255, 255, 255))
     surface.blit(title, (START_BOX_X + BOX_WIDTH / 2 - (title.get_width() / 2), 20))
 
     # draw each brick
@@ -236,18 +236,18 @@ def draw_lost_text(WIN):
 
     while lost:
         WIN.fill((0, 0, 0))
-        lost_text = LOST_FONT.render('YOU LOST!', 1, (255, 255, 255))
+        lost_text = LOST_FONT.render('YOU LOST!', True, (255, 255, 255))
         WIN.blit(lost_text, (WIDTH / 2 - lost_text.get_width() / 2, HEIGHT / 3))
 
-        retry_text = TITLE_FONT.render('Do you want to play again?', 1, (255, 255, 255))
+        retry_text = TITLE_FONT.render('Do you want to play again?', True, (255, 255, 255))
         WIN.blit(retry_text, (WIDTH / 2 - retry_text.get_width() / 2, HEIGHT / 3 + 100))
 
         retry_options = [('YES', 150), ('NO', - 150)]
         for i, v in enumerate(retry_options, start=1):
             if i == active:
-                label = TITLE_FONT.render(v[0], 1, (255, 0, 0))
+                label = TITLE_FONT.render(v[0], True, (255, 0, 0))
             else:
-                label = TITLE_FONT.render(v[0], 1, (255, 255, 255))
+                label = TITLE_FONT.render(v[0], True, (255, 255, 255))
             WIN.blit(label, (WIDTH / 2 - label.get_width() / 2 - v[1], HEIGHT / 3 + 200))
         pygame.display.update()
         for event in pygame.event.get():
@@ -285,7 +285,7 @@ def format_timer():
 
 def draw_next_shape(shape, surface, score):
     # draw preview next block
-    text = PREVIEW_FONT.render('Next Block', 1, (255, 255, 255))
+    text = PREVIEW_FONT.render('Next Block', True, (255, 255, 255))
 
     preview_x = START_BOX_X + BOX_WIDTH + 50
     preview_y = START_BOX_Y + BOX_HEIGHT / 2 - 100
@@ -293,20 +293,24 @@ def draw_next_shape(shape, surface, score):
     format = shape.shape[shape.rotation % len(shape.shape)]
 
     # draw score
-    label = SCORE_FONT.render(f'SCORE: {score}', 1, (255, 255, 255))
+    label = SCORE_FONT.render(f'SCORE: {score}', True, (255, 255, 255))
     surface.blit(label, (preview_x + 2.5 * BLOCK_SIZE - label.get_width() / 2, preview_y - 80 - BLOCK_SIZE))
 
     # draw max score
-    label = SCORE_FONT.render(f'MAX SCORE: {get_max_score() if get_max_score() else 0}', 1, (255, 255, 255))
+    label = SCORE_FONT.render(f'MAX SCORE: {get_max_score() if get_max_score() else 0}', True, (255, 255, 255))
     surface.blit(label, (START_BOX_X/2 - label.get_width()/2, preview_y - 80 - BLOCK_SIZE))
 
     # draw timer
-    label = SCORE_FONT.render(f'Timer: {format_timer()}', 1, (255, 255, 255))
+    label = SCORE_FONT.render(f'TIMER: {format_timer()}', True, (255, 255, 255))
     surface.blit(label, (START_BOX_X/2 - label.get_width()/2, preview_y - 40))
 
     # draw speed value
-    label = SCORE_FONT.render(f'Speed level: {speed_level}', 1, (255, 255, 255))
-    surface.blit(label, (START_BOX_X/2 - label.get_width()/2, preview_y + 40))
+    label = SCORE_FONT.render(f'SPEED LEVEL: {speed_level}', True, (255, 255, 255))
+    surface.blit(label, (START_BOX_X/2 - label.get_width()/2, preview_y + 30))
+
+    # draw combo
+    label = SCORE_FONT.render(f'COMBO: {combo}', True, (255, 255, 255))
+    surface.blit(label, (START_BOX_X/2 - label.get_width()/2, preview_y + 100))
 
     for i, row in enumerate(format):
         for j, column in enumerate(row):
@@ -334,13 +338,13 @@ def draw_menu_button(WIN, text, row, color):
         5: -50
     }
 
-    label = PREVIEW_FONT.render(text, 1, color)
+    label = PREVIEW_FONT.render(text, True, color)
     button_x = WIDTH / 2 - label.get_width() / 2
     WIN.blit(label, (button_x, HEIGHT / 2 - rows_height[row]))
 
 
 def draw_menu(WIN, menu_title, buttons):
-    menu_text = TITLE_FONT.render(menu_title, 1, (255, 255, 255))
+    menu_text = TITLE_FONT.render(menu_title, True, (255, 255, 255))
     WIN.blit(menu_text, (WIDTH / 2 - menu_text.get_width() / 2, HEIGHT / 2 - 250))
 
     for i, v in enumerate(buttons, start=1):
@@ -352,10 +356,11 @@ def draw_menu(WIN, menu_title, buttons):
 
 def clear_rows(grid, lock):
     global extra_speed
+    global combo
     extra_speed = 0
 
     num_del = 0  # number of row to delete
-    for i in range(len(grid) -1, -1, -1):
+    for i in range(len(grid) - 1, -1, -1):
         row = grid[i]
         if (0, 0, 0) not in row:
             num_del += 1
@@ -367,11 +372,14 @@ def clear_rows(grid, lock):
                     continue
     if num_del > 0:
         extra_speed += num_del
+        combo += num_del
         for key in sorted(list(lock), key=lambda x: x[1])[::-1]:
             x, y = key
             if y < ind:
                 new_key = (x, y + num_del)
                 lock[new_key] = lock.pop(key)
+    else:
+        combo = 0
 
     return num_del
 
@@ -440,7 +448,7 @@ def save_score(score):
 
 
 def draw_leaderboard(WIN, leaderboard):
-    menu_text = TITLE_FONT.render('LEADERBOARD', 1, (255, 255, 255))
+    menu_text = TITLE_FONT.render('LEADERBOARD', True, (255, 255, 255))
     WIN.blit(menu_text, (WIDTH / 2 - menu_text.get_width() / 2, HEIGHT / 2 - 250))
 
     width_btn = -100
@@ -449,18 +457,18 @@ def draw_leaderboard(WIN, leaderboard):
         for index, j in enumerate(v):
             # draw title row
             if i == 0:
-                label = PREVIEW_FONT.render(j, 1, (255, 255, 255))
+                label = PREVIEW_FONT.render(j, True, (255, 255, 255))
                 button_x = WIDTH / 2 - label.get_width() / 2
                 WIN.blit(label, (button_x + width_btn, HEIGHT / 3))
             else:
                 # draw place of score
                 if index == 0:
-                    label = PREVIEW_FONT.render(str(i), 1, (255, 255, 255))
+                    label = PREVIEW_FONT.render(str(i), True, (255, 255, 255))
                     button_x = WIDTH / 2 - label.get_width() / 2
                     WIN.blit(label, (button_x + width_btn, HEIGHT / 3 + height_btn))
                     width_btn += 100
                 # draw score and time
-                label = PREVIEW_FONT.render(j, 1, (255, 255, 255))
+                label = PREVIEW_FONT.render(j, True, (255, 255, 255))
                 button_x = WIDTH / 2 - label.get_width() / 2
                 WIN.blit(label, (button_x + width_btn, HEIGHT / 3 + height_btn))
             width_btn += 100
