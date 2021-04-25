@@ -517,6 +517,11 @@ def get_leaderboard():
                     high_scores = False
 
 
+def get_score_factor():
+    score_factor = speed_level + combo * 10
+    return score_factor
+
+
 def restart_stats():
     global timer
     global speed_level
@@ -611,8 +616,7 @@ def main(WIN):
             current_piece = next_piece
             next_piece = get_shape()
             change_piece = False
-            score += clear_rows(grid, locked_pos) * 10
-            print(fall_speed)
+            score += clear_rows(grid, locked_pos) * get_score_factor()
             if mode == 1 and fall_speed > 0.1:
                 fall_speed -= extra_speed * 0.005
                 speed_level += extra_speed
@@ -675,14 +679,12 @@ def main_menu(WIN):
                             start_speed_level = 1
                             fall_speed = 0.45 - start_speed_level * 0.005
                             start_fall_speed = 0.45 - start_speed_level * 0.005
-                            print(start_speed_level, start_fall_speed, fall_speed)
                         else:
                             speed += 1
                             speed_level += 30
                             start_speed_level += 30
                             fall_speed = 0.45 - start_speed_level * 0.005
                             start_fall_speed = 0.45 - start_speed_level * 0.005
-                            print(start_speed_level, start_fall_speed, fall_speed)
                     elif active == 3:
                         if mode == 2:
                             mode = 0
