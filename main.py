@@ -137,6 +137,7 @@ mode = 1
 extra_speed = 0
 timer = 0
 speed_level = 30
+start_speed_level = 30
 combo = 0
 
 
@@ -510,13 +511,13 @@ def main(WIN):
     global speed_level
     locked_pos = {}
     grid = create_grid(locked_pos)
-    speeds = [0.45, 0.3, 0.15]
     change_piece = False
     current_piece = get_shape()
     next_piece = get_shape()
     clock = pygame.time.Clock()
     fall_time = 0
-    fall_speed = speeds[speed]
+    fall_speed = 0.45 - speed_level * 0.005
+    start_fall_speed = 0.45 - speed_level * 0.005
     score = 0
     hardcore_time = 0
     time_elapsed = 0
@@ -600,6 +601,8 @@ def main(WIN):
 
         if check_lost(locked_pos):
             timer = 0
+            speed_level = start_speed_level
+            fall_speed = start_fall_speed
             if score > 0:
                 save_score(score)
             draw_lost_text(WIN)
@@ -612,6 +615,7 @@ def main_menu(WIN):
     global speed
     global mode
     global speed_level
+    global start_speed_level
     run = True
     speeds = ['LOW', 'MEDIUM', 'HIGH']
     modes = ['ENDLESS (CONSTANT SPEED)', 'SURVIVAL (INCREASING SPEED WHEN SCORING POINTS)',
@@ -645,9 +649,11 @@ def main_menu(WIN):
                         if speed == 2:
                             speed = 0
                             speed_level = 1
+                            start_speed_level = 1
                         else:
                             speed += 1
                             speed_level += 30
+                            start_speed_level += 30
                     elif active == 3:
                         if mode == 2:
                             mode = 0
