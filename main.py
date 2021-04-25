@@ -134,7 +134,7 @@ speed = 1
 mode = 1
 extra_speed = 0
 timer = 0
-speed_level = 1
+speed_level = 30
 
 
 class Piece(object):
@@ -598,6 +598,7 @@ def main_menu(WIN):
     global active
     global speed
     global mode
+    global speed_level
     run = True
     speeds = ['LOW', 'MEDIUM', 'HIGH']
     modes = ['ENDLESS (CONSTANT SPEED)', 'SURVIVAL (INCREASING SPEED WHEN SCORING POINTS)',
@@ -630,8 +631,10 @@ def main_menu(WIN):
                     elif active == 2:
                         if speed == 2:
                             speed = 0
+                            speed_level = 1
                         else:
                             speed += 1
+                            speed_level += 30
                     elif active == 3:
                         if mode == 2:
                             mode = 0
