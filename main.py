@@ -6,6 +6,7 @@ from score import get_score_factor, save_score, get_max_score
 from leaderboard import get_leaderboard
 from menu import draw_menu, pause
 from validation import valid_space, check_lost
+from game_window import draw_window, draw_next_shape
 
 # SIZE OF SCREEN
 WIDTH, HEIGHT = 800, 700
@@ -176,25 +177,6 @@ def convert_shape_format(block):
     return positions
 
 
-def draw_window(surface, grid):
-    surface.fill((0, 0, 0))
-
-    # draw title over the box
-    title = TITLE_FONT.render('TETRIS', True, (255, 255, 255))
-    surface.blit(title, (START_BOX_X + BOX_WIDTH / 2 - (title.get_width() / 2), 20))
-
-    # draw each brick
-    for i in range(len(grid)):
-        for j in range(len(grid[i])):
-            pygame.draw.rect(surface, grid[i][j], (START_BOX_X + j * BLOCK_SIZE, START_BOX_Y + i * BLOCK_SIZE,
-                                                   BLOCK_SIZE, BLOCK_SIZE), 0)
-
-    # draw border of box
-    pygame.draw.rect(surface, (255, 0, 0), (START_BOX_X, START_BOX_Y, BOX_WIDTH, BOX_HEIGHT), 5)
-
-    draw_grid(surface, grid, START_BOX_X, START_BOX_Y, BLOCK_SIZE, BOX_WIDTH, BOX_HEIGHT)
-
-
 def draw_lost_text(WIN):
     global active
     lost = True
@@ -247,56 +229,6 @@ def format_timer():
     formatted_timer = f'{formatted_mins}:{formatted_secs}'
 
     return formatted_timer
-
-
-def draw_next_shape(shape, surface, score):
-    # draw preview next block
-    text = PREVIEW_FONT.render('Next Block', True, (255, 255, 255))
-
-    preview_x = START_BOX_X + BOX_WIDTH + 50
-    preview_y = START_BOX_Y + BOX_HEIGHT / 2 - 100
-    surface.blit(text, (preview_x + 2.5 * BLOCK_SIZE - text.get_width() / 2, preview_y - 30 - BLOCK_SIZE))
-    format = shape.shape[shape.rotation % len(shape.shape)]
-
-    # draw score
-    label = SCORE_FONT.render(f'SCORE: {score}', True, (255, 255, 255))
-    surface.blit(label, (preview_x + 2.5 * BLOCK_SIZE - label.get_width() / 2, preview_y - 80 - BLOCK_SIZE))
-
-    # draw max score
-    label = SCORE_FONT.render(f'MAX SCORE: {get_max_score() if get_max_score() else 0}', True, (255, 255, 255))
-    surface.blit(label, (START_BOX_X/2 - label.get_width()/2, preview_y - 80 - BLOCK_SIZE))
-
-    # draw timer
-    label = SCORE_FONT.render(f'TIMER: {format_timer()}', True, (255, 255, 255))
-    surface.blit(label, (START_BOX_X/2 - label.get_width()/2, preview_y - 40))
-
-    # draw speed value
-    label = SCORE_FONT.render(f'SPEED LEVEL: {speed_level}', True, (255, 255, 255))
-    surface.blit(label, (START_BOX_X/2 - label.get_width()/2, preview_y + 30))
-
-    # draw combo
-    label = SCORE_FONT.render(f'COMBO: {combo}', True, (255, 255, 255))
-    surface.blit(label, (START_BOX_X/2 - label.get_width()/2, preview_y + 100))
-
-    # max combo
-    label = SCORE_FONT.render(f'MAX COMBO: {max_combo}', True, (255, 255, 255))
-    surface.blit(label, (START_BOX_X/2 - label.get_width()/2, preview_y + 170))
-
-    for i, row in enumerate(format):
-        for j, column in enumerate(row):
-            if column == '0':
-                pygame.draw.rect(surface, shape.color, (preview_x + j * BLOCK_SIZE, preview_y + i * BLOCK_SIZE,
-                                                        BLOCK_SIZE, BLOCK_SIZE), 0)
-    # draw horizontal borders
-    pygame.draw.line(surface, (255, 0, 0), (preview_x, preview_y - BLOCK_SIZE),
-                     (preview_x + 5 * BLOCK_SIZE, preview_y - BLOCK_SIZE), width=3)
-    pygame.draw.line(surface, (255, 0, 0), (preview_x, preview_y + 5 * BLOCK_SIZE),
-                     (preview_x + 5 * BLOCK_SIZE, preview_y + 5 * BLOCK_SIZE), width=3)
-    # draw vertical borders
-    pygame.draw.line(surface, (255, 0, 0), (preview_x, preview_y - BLOCK_SIZE),
-                     (preview_x, preview_y + 5 * BLOCK_SIZE), width=3)
-    pygame.draw.line(surface, (255, 0, 0), (preview_x + 5 * BLOCK_SIZE, preview_y - BLOCK_SIZE),
-                     (preview_x + 5 * BLOCK_SIZE, preview_y + 5 * BLOCK_SIZE), width=3)
 
 
 def clear_rows(grid, lock):
@@ -430,8 +362,9 @@ def main(WIN):
                 fall_speed -= extra_speed * 0.005
                 speed_level += extra_speed
 
-        draw_window(WIN, grid)
-        draw_next_shape(next_piece, WIN, score)
+        draw_window(WIN, grid, START_BOX_X, START_BOX_Y, BOX_WIDTH, BOX_HEIGHT, BLOCK_SIZE, draw_grid)
+        draw_next_shape(next_piece, WIN, score, START_BOX_X, START_BOX_Y, BOX_WIDTH, BOX_HEIGHT, BLOCK_SIZE,
+                        get_max_score, format_timer, speed_level, combo, max_combo)
         pygame.display.update()
 
         if check_lost(locked_pos):
