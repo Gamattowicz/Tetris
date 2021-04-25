@@ -12,7 +12,7 @@ def draw_leaderboard(win, leaderboard, width, height):
     menu_text = TITLE_FONT.render('LEADERBOARD', True, (255, 255, 255))
     win.blit(menu_text, (width / 2 - menu_text.get_width() / 2, height / 2 - 350))
 
-    width_btn = -200
+    width_btn = -250
     height_btn = -100
     for i, v in enumerate(leaderboard):
         for index, j in enumerate(v):
@@ -33,7 +33,7 @@ def draw_leaderboard(win, leaderboard, width, height):
                 button_x = width / 2 - label.get_width() / 2
                 win.blit(label, (button_x + width_btn, height / 3 + height_btn))
             width_btn += 100
-        width_btn = -200
+        width_btn = -250
         height_btn += 50
 
 

@@ -1,4 +1,5 @@
 import csv
+from datetime import date
 
 
 def get_max_score():
@@ -21,10 +22,10 @@ def save_score(score, timer, speed_level, max_combo):
         f.seek(0)
         data = f.read(100)
         if len(data) == 0:
-            f.write('No.,Score,Time,Speed Level,Max Combo\n')
+            f.write('No.,Score,Time,Speed Level,Max Combo, Date\n')
         else:
             f.write('\n')
-        f.write(f'{str(score)},{timer},{speed_level},{max_combo}')
+        f.write(f'{str(score)},{timer},{speed_level},{max_combo},{date.today()}')
 
 
 def get_score_factor(speed_level, combo):
