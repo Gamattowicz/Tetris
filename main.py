@@ -2,6 +2,7 @@ import pygame
 import random
 import sys
 import csv
+from grid import create_grid, draw_grid
 
 # SIZE OF SCREEN
 WIDTH, HEIGHT = 800, 700
@@ -153,28 +154,6 @@ class Piece(object):
         self.rotation = 0
 
 
-def create_grid(locked_pos={}):
-    grid = [[(0, 0, 0) for i in range(10)] for i in range(20)]
-
-    for i in range(len(grid)):
-        for j in range(len(grid[i])):
-            if (j, i) in locked_pos:
-                c = locked_pos[(j, i)]
-                grid[i][j] = c
-    return grid
-
-
-def draw_grid(surface, grid):
-    for i in range(len(grid)):
-        pygame.draw.line(surface, (128, 128, 128), (START_BOX_X, START_BOX_Y + i * BLOCK_SIZE),
-                         (START_BOX_X + BOX_WIDTH,
-                          START_BOX_Y + i * BLOCK_SIZE))
-        for j in range(len(grid[i])):
-            pygame.draw.line(surface, (128, 128, 128), (START_BOX_X + j * BLOCK_SIZE, START_BOX_Y),
-                             (START_BOX_X + j * BLOCK_SIZE,
-                              START_BOX_Y + BOX_HEIGHT))
-
-
 def get_shape():
     return Piece(5, 0, random.choice(SHAPES))
 
@@ -223,7 +202,7 @@ def draw_window(surface, grid):
     # draw border of box
     pygame.draw.rect(surface, (255, 0, 0), (START_BOX_X, START_BOX_Y, BOX_WIDTH, BOX_HEIGHT), 5)
 
-    draw_grid(surface, grid)
+    draw_grid(surface, grid, START_BOX_X, START_BOX_Y, BLOCK_SIZE, BOX_WIDTH, BOX_HEIGHT)
 
 
 def check_lost(positions):
