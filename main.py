@@ -4,6 +4,7 @@ import sys
 from grid import create_grid, draw_grid
 from score import get_score_factor, save_score, get_max_score
 from leaderboard import get_leaderboard
+from menu import draw_menu, pause
 
 # SIZE OF SCREEN
 WIDTH, HEIGHT = 800, 700
@@ -318,31 +319,6 @@ def draw_next_shape(shape, surface, score):
                      (preview_x + 5 * BLOCK_SIZE, preview_y + 5 * BLOCK_SIZE), width=3)
 
 
-def draw_menu_button(WIN, text, row, color):
-    rows_height = {
-        1: 150,
-        2: 100,
-        3: 50,
-        4: 0,
-        5: -50
-    }
-
-    label = PREVIEW_FONT.render(text, True, color)
-    button_x = WIDTH / 2 - label.get_width() / 2
-    WIN.blit(label, (button_x, HEIGHT / 2 - rows_height[row]))
-
-
-def draw_menu(WIN, menu_title, buttons):
-    menu_text = TITLE_FONT.render(menu_title, True, (255, 255, 255))
-    WIN.blit(menu_text, (WIDTH / 2 - menu_text.get_width() / 2, HEIGHT / 2 - 250))
-
-    for i, v in enumerate(buttons, start=1):
-        if i == active:
-            draw_menu_button(WIN, v, i, (255, 0, 0))
-        else:
-            draw_menu_button(WIN, v, i, (255, 255, 255))
-
-
 def clear_rows(grid, lock):
     global extra_speed
     global combo
@@ -373,48 +349,6 @@ def clear_rows(grid, lock):
         combo = 0
 
     return num_del
-
-
-def pause(WIN):
-    global active
-    buttons = ['RESUME', 'RESTART', 'MAIN MENU', 'HIGH SCORES', 'EXIT']
-    paused = True
-
-    while paused:
-        WIN.fill((0, 0, 0))
-        draw_menu(WIN, 'PAUSE', buttons)
-        pygame.display.update()
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    paused = False
-                elif event.key == pygame.K_DOWN:
-                    if active == 5:
-                        active = 1
-                    else:
-                        active += 1
-                elif event.key == pygame.K_UP:
-                    if active == 1:
-                        active = 5
-                    else:
-                        active -= 1
-                elif event.key == pygame.K_RETURN:
-                    if active == 1:
-                        paused = False
-                    elif active == 2:
-                        restart_stats()
-                        main(WIN)
-                    elif active == 3:
-                        main_menu(WIN)
-                    elif active == 4:
-                        get_leaderboard(WIN, WIDTH, HEIGHT)
-                    elif active == 5:
-                        pygame.quit()
-                        sys.exit()
 
 
 def restart_stats():
@@ -494,7 +428,7 @@ def main(WIN):
                     if not (valid_space(current_piece, grid)):
                         current_piece.rotation -= 1
                 elif event.key == pygame.K_ESCAPE:
-                    pause(WIN)
+                    pause(WIN, active, WIDTH, HEIGHT, restart_stats, main, main_menu, get_leaderboard)
 
         shape_pos = convert_shape_format(current_piece)
 
@@ -544,7 +478,7 @@ def main_menu(WIN):
     while run:
         WIN.fill((0, 0, 0))
         buttons = ['NEW GAME', f'SPEED: {speeds[speed]}', f'MODE: {modes[mode]}', 'LEADERBOARD', 'EXIT']
-        draw_menu(WIN, 'MAIN MENU', buttons)
+        draw_menu(WIN, 'MAIN MENU', buttons, WIDTH, HEIGHT, active)
         pygame.display.update()
 
         for event in pygame.event.get():
