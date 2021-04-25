@@ -428,12 +428,16 @@ def pause(WIN):
 def get_max_score():
     rows = []
     with open('scores.csv', 'a+') as f:
-        reader = csv.reader(f, delimiter=' ')
+        f.seek(0)
+        reader = csv.reader(f, delimiter=',')
         for row in reader:
-            rows.append(row[0])
+            try:
+                rows.append(int(row[0]))
+            except:
+                continue
     if len(rows) > 0:
-        max_score = max(rows)
-        return max_score
+        max_score = sorted(rows, reverse=True)
+        return max_score[0]
 
 
 def save_score(score):
@@ -595,6 +599,7 @@ def main(WIN):
         pygame.display.update()
 
         if check_lost(locked_pos):
+            timer = 0
             if score > 0:
                 save_score(score)
             draw_lost_text(WIN)
