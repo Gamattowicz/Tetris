@@ -258,6 +258,9 @@ def clear_rows(grid, lock, player):
         player.extra_speed += num_del
         player.combo += num_del
         player.max_combo = player.combo if player.combo > player.max_combo else player.max_combo
+        if mode == 1 and player.fall_speed > 0.1:
+            player.fall_speed -= player.extra_speed * 0.005
+            player.speed_level += player.extra_speed
         for key in sorted(list(lock), key=lambda x: x[1])[::-1]:
             x, y = key
             if y < ind:
@@ -344,6 +347,7 @@ def main(WIN, player):
                 grid[y][x] = current_piece.color
 
         if change_piece:
+            print(player.fall_speed)
             for pos in shape_pos:
                 p = (pos[0], pos[1])
                 locked_pos[p] = current_piece.color
@@ -351,9 +355,6 @@ def main(WIN, player):
             next_piece = get_shape()
             change_piece = False
             player.score += clear_rows(grid, locked_pos, player) * player.get_score_factor()
-            if mode == 1 and player.fall_speed > 0.1:
-                player.fall_speed -= player.extra_speed * 0.005
-                player.speed_level += player.extra_speed
 
         draw_window(WIN, grid, START_BOX_X, START_BOX_Y, BOX_WIDTH, BOX_HEIGHT, BLOCK_SIZE, draw_grid)
         draw_next_shape(next_piece, WIN, player.score, START_BOX_X, START_BOX_Y, BOX_WIDTH, BOX_HEIGHT, BLOCK_SIZE,
@@ -362,7 +363,6 @@ def main(WIN, player):
 
         if check_lost(locked_pos):
             draw_name(WIN, player)
-
 
     pygame.display.quit()
 
