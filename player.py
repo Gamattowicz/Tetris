@@ -23,10 +23,7 @@ class Player(object):
             f.seek(0)
             reader = csv.reader(f, delimiter=',')
             for row in reader:
-                try:
-                    rows.append(int(row[0]))
-                except:
-                    continue
+                rows.append(int(row[1]))
         if len(rows) > 0:
             max_score = sorted(rows, reverse=True)
             return max_score[0]
@@ -44,9 +41,7 @@ class Player(object):
         with open('scores.csv', 'a+') as f:
             f.seek(0)
             data = f.read(100)
-            if len(data) == 0:
-                f.write('No.,Name,Score,Speed Level,Time,Max Combo,Date \n')
-            else:
+            if len(data) > 0:
                 f.write('\n')
             f.write(f'{self.name},{str(self.score)},{self.speed_level},{formatted_timer()},{self.max_combo},{date.today()}')
 

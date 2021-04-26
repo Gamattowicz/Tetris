@@ -232,7 +232,6 @@ def draw_lost_text(WIN, player):
                     if active == 1:
                         active = 2
                     else:
-
                         active -= 1
                 elif event.key == pygame.K_RETURN:
                     if active == 1:
@@ -347,7 +346,6 @@ def main(WIN, player):
                 grid[y][x] = current_piece.color
 
         if change_piece:
-            print(player.fall_speed)
             for pos in shape_pos:
                 p = (pos[0], pos[1])
                 locked_pos[p] = current_piece.color
