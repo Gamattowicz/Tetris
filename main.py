@@ -177,17 +177,44 @@ def convert_shape_format(block):
     return positions
 
 
+def draw_name(win):
+    name = ""
+    draw = True
+    while draw:
+        for evt in pygame.event.get():
+            if evt.type == pygame.KEYDOWN:
+                if evt.unicode.isalpha():
+                    name += evt.unicode
+                elif evt.key == pygame.K_BACKSPACE:
+                    name = name[:-1]
+                elif evt.key == pygame.K_RETURN or evt.type == pygame.QUIT:
+                    draw = False
+        win.fill((0, 0, 0))
+
+        lost_text = LOST_FONT.render('YOU LOST!', True, (255, 255, 255))
+        WIN.blit(lost_text, (WIDTH / 2 - lost_text.get_width() / 2, HEIGHT / 10))
+
+        input_text = TITLE_FONT.render('Enter your name:', True, (255, 255, 255))
+        WIN.blit(input_text, (WIDTH / 2 - input_text.get_width() / 2, HEIGHT / 4 + 50))
+
+        block = PREVIEW_FONT.render(name, True, (255, 255, 255))
+        rect = block.get_rect()
+        rect.center = win.get_rect().center
+        win.blit(block, rect)
+        pygame.display.flip()
+
+    draw_lost_text(WIN)
+
+
 def draw_lost_text(WIN):
     global active
     lost = True
 
     while lost:
         WIN.fill((0, 0, 0))
-        lost_text = LOST_FONT.render('YOU LOST!', True, (255, 255, 255))
-        WIN.blit(lost_text, (WIDTH / 2 - lost_text.get_width() / 2, HEIGHT / 3))
 
         retry_text = TITLE_FONT.render('Do you want to play again?', True, (255, 255, 255))
-        WIN.blit(retry_text, (WIDTH / 2 - retry_text.get_width() / 2, HEIGHT / 3 + 100))
+        WIN.blit(retry_text, (WIDTH / 2 - retry_text.get_width() / 2, HEIGHT / 5))
 
         retry_options = [('YES', 150), ('NO', - 150)]
         for i, v in enumerate(retry_options, start=1):
@@ -195,8 +222,9 @@ def draw_lost_text(WIN):
                 label = TITLE_FONT.render(v[0], True, (255, 0, 0))
             else:
                 label = TITLE_FONT.render(v[0], True, (255, 255, 255))
-            WIN.blit(label, (WIDTH / 2 - label.get_width() / 2 - v[1], HEIGHT / 3 + 200))
+            WIN.blit(label, (WIDTH / 2 - label.get_width() / 2 - v[1], HEIGHT / 3 + 100))
         pygame.display.update()
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -371,7 +399,7 @@ def main(WIN):
             if score > 0:
                 save_score(score, format_timer(), speed_level, max_combo)
             restart_stats()
-            draw_lost_text(WIN)
+            draw_name(WIN)
 
     pygame.display.quit()
 
