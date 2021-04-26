@@ -2,7 +2,7 @@ import pygame
 import random
 import sys
 from grid import create_grid, draw_grid
-from score import get_score_factor, save_score, get_max_score
+from player import Player
 from leaderboard import get_leaderboard
 from menu import draw_menu, pause
 from validation import valid_space, check_lost
@@ -137,16 +137,7 @@ SHAPE_COLORS = [(0, 255, 0), (255, 0, 0), (0, 255, 255), (255, 255, 0),
 
 # GLOBAL VARIABLES
 active = 1
-speed = 1
 mode = 1
-extra_speed = 0
-timer = 0
-speed_level = 30
-start_speed_level = 30
-combo = 0
-max_combo = 0
-fall_speed = 0.45 - start_speed_level * 0.005
-start_fall_speed = 0.45 - start_speed_level * 0.005
 
 
 class Piece(object):
@@ -177,16 +168,15 @@ def convert_shape_format(block):
     return positions
 
 
-def draw_name(win):
-    name = ""
+def draw_name(win, player):
     draw = True
     while draw:
         for evt in pygame.event.get():
             if evt.type == pygame.KEYDOWN:
                 if evt.unicode.isalpha():
-                    name += evt.unicode
+                    player.name += evt.unicode
                 elif evt.key == pygame.K_BACKSPACE:
-                    name = name[:-1]
+                    player.name = player.name[:-1]
                 elif evt.key == pygame.K_RETURN or evt.type == pygame.QUIT:
                     draw = False
         win.fill((0, 0, 0))
@@ -197,16 +187,16 @@ def draw_name(win):
         input_text = TITLE_FONT.render('Enter your name:', True, (255, 255, 255))
         WIN.blit(input_text, (WIDTH / 2 - input_text.get_width() / 2, HEIGHT / 4 + 50))
 
-        block = PREVIEW_FONT.render(name, True, (255, 255, 255))
+        block = PREVIEW_FONT.render(player.name, True, (255, 255, 255))
         rect = block.get_rect()
         rect.center = win.get_rect().center
         win.blit(block, rect)
-        pygame.display.flip()
+        pygame.display.update()
 
-    draw_lost_text(WIN)
+    draw_lost_text(WIN, player)
 
 
-def draw_lost_text(WIN):
+def draw_lost_text(WIN, player):
     global active
     lost = True
 
@@ -243,28 +233,13 @@ def draw_lost_text(WIN):
                         active -= 1
                 elif event.key == pygame.K_RETURN:
                     if active == 1:
-                        main(WIN)
+                        main(WIN, player)
                     elif active == 2:
                         pygame.quit()
                         sys.exit()
 
 
-def format_timer():
-    mins = timer // 60
-    formatted_mins = f'0{mins}' if mins < 10 else mins
-    secs = timer - mins * 60
-    formatted_secs = f'0{secs}' if secs < 10 else secs
-    formatted_timer = f'{formatted_mins}:{formatted_secs}'
-
-    return formatted_timer
-
-
-def clear_rows(grid, lock):
-    global extra_speed
-    global combo
-    global max_combo
-    extra_speed = 0
-
+def clear_rows(grid, lock, player):
     num_del = 0  # number of row to delete
     for i in range(len(grid) - 1, -1, -1):
         row = grid[i]
@@ -277,35 +252,21 @@ def clear_rows(grid, lock):
                 except:
                     continue
     if num_del > 0:
-        extra_speed += num_del
-        combo += num_del
-        max_combo = combo if combo > max_combo else max_combo
+        player.extra_speed += num_del
+        player.combo += num_del
+        player.max_combo = player.combo if player.combo > player.max_combo else player.max_combo
         for key in sorted(list(lock), key=lambda x: x[1])[::-1]:
             x, y = key
             if y < ind:
                 new_key = (x, y + num_del)
                 lock[new_key] = lock.pop(key)
     else:
-        combo = 0
+        player.combo = 0
 
     return num_del
 
 
-def restart_stats():
-    global timer
-    global speed_level
-    global max_combo
-    global fall_speed
-    timer = 0
-    max_combo = 0
-    speed_level = start_speed_level
-    fall_speed = start_fall_speed
-
-
-def main(WIN):
-    global timer
-    global speed_level
-    global fall_speed
+def main(WIN, player):
     locked_pos = {}
     grid = create_grid(locked_pos)
     change_piece = False
@@ -313,9 +274,10 @@ def main(WIN):
     next_piece = get_shape()
     clock = pygame.time.Clock()
     fall_time = 0
-    score = 0
     hardcore_time = 0
     time_elapsed = 0
+
+    player.restart_stats()
 
     run = True
     while run:
@@ -328,15 +290,15 @@ def main(WIN):
 
         if time_elapsed / 1000 > 1:
             time_elapsed = 0
-            timer += 1
+            player.timer += 1
 
         if hardcore_time / 1000 > 5:
             hardcore_time = 0
-            if fall_speed > 0.1:
-                fall_speed -= 0.005
-                speed_level += 1
+            if player.fall_speed > 0.1:
+                player.fall_speed -= 0.005
+                player.speed_level += 1
 
-        if fall_time / 1000 > fall_speed:
+        if fall_time / 1000 > player.fall_speed:
             fall_time = 0
             current_piece.y += 1
             if not (valid_space(current_piece, grid, convert_shape_format)) and current_piece.y > 0:
@@ -368,7 +330,7 @@ def main(WIN):
                     if not (valid_space(current_piece, grid, convert_shape_format)):
                         current_piece.rotation -= 1
                 elif event.key == pygame.K_ESCAPE:
-                    pause(WIN, active, WIDTH, HEIGHT, restart_stats, main, main_menu, get_leaderboard)
+                    pause(WIN, active, WIDTH, HEIGHT, player.restart_stats, main, main_menu, get_leaderboard, player)
 
         shape_pos = convert_shape_format(current_piece)
 
@@ -385,40 +347,36 @@ def main(WIN):
             current_piece = next_piece
             next_piece = get_shape()
             change_piece = False
-            score += clear_rows(grid, locked_pos) * get_score_factor(speed_level, combo)
-            if mode == 1 and fall_speed > 0.1:
-                fall_speed -= extra_speed * 0.005
-                speed_level += extra_speed
+            player.score += clear_rows(grid, locked_pos, player) * player.get_score_factor()
+            if mode == 1 and player.fall_speed > 0.1:
+                player.fall_speed -= player.extra_speed * 0.005
+                player.speed_level += player.extra_speed
 
         draw_window(WIN, grid, START_BOX_X, START_BOX_Y, BOX_WIDTH, BOX_HEIGHT, BLOCK_SIZE, draw_grid)
-        draw_next_shape(next_piece, WIN, score, START_BOX_X, START_BOX_Y, BOX_WIDTH, BOX_HEIGHT, BLOCK_SIZE,
-                        get_max_score, format_timer, speed_level, combo, max_combo)
+        draw_next_shape(next_piece, WIN, player.score, START_BOX_X, START_BOX_Y, BOX_WIDTH, BOX_HEIGHT, BLOCK_SIZE,
+                        player.get_max_score, player.format_timer, player.speed_level, player.combo, player.max_combo)
         pygame.display.update()
 
         if check_lost(locked_pos):
-            if score > 0:
-                save_score(score, format_timer(), speed_level, max_combo)
-            restart_stats()
-            draw_name(WIN)
+            if player.score > 0:
+                player.save_score(player.format_timer)
+            player.restart_stats()
+            draw_name(WIN, player)
 
     pygame.display.quit()
 
 
 def main_menu(WIN):
     global active
-    global speed
     global mode
-    global speed_level
-    global start_speed_level
-    global start_fall_speed
-    global fall_speed
+    player = Player()
     run = True
     speeds = ['LOW', 'MEDIUM', 'HIGH']
     modes = ['ENDLESS (CONSTANT SPEED)', 'SURVIVAL (INCREASING SPEED WHEN SCORING POINTS)',
              'HARDCORE (INCREASING SPEED OVER TIME)']
     while run:
         WIN.fill((0, 0, 0))
-        buttons = ['NEW GAME', f'SPEED: {speeds[speed]}', f'MODE: {modes[mode]}', 'LEADERBOARD', 'EXIT']
+        buttons = ['NEW GAME', f'SPEED: {speeds[player.speed]}', f'MODE: {modes[mode]}', 'LEADERBOARD', 'EXIT']
         draw_menu(WIN, 'MAIN MENU', buttons, WIDTH, HEIGHT, active)
         pygame.display.update()
 
@@ -440,21 +398,20 @@ def main_menu(WIN):
                         active -= 1
                 elif event.key == pygame.K_RETURN:
                     if active == 1:
-                        restart_stats()
-                        main(WIN)
+                        main(WIN, player)
                     elif active == 2:
-                        if speed == 2:
-                            speed = 0
-                            speed_level = 1
-                            start_speed_level = 1
-                            fall_speed = 0.45 - start_speed_level * 0.005
-                            start_fall_speed = 0.45 - start_speed_level * 0.005
+                        if player.speed == 2:
+                            player.speed = 0
+                            player.speed_level = 1
+                            player.start_speed_level = 1
+                            player.fall_speed = 0.45 - player.start_speed_level * 0.005
+                            player.start_fall_speed = 0.45 - player.start_speed_level * 0.005
                         else:
-                            speed += 1
-                            speed_level += 30
-                            start_speed_level += 30
-                            fall_speed = 0.45 - start_speed_level * 0.005
-                            start_fall_speed = 0.45 - start_speed_level * 0.005
+                            player.speed += 1
+                            player.speed_level += 30
+                            player.start_speed_level += 30
+                            player.fall_speed = 0.45 - player.start_speed_level * 0.005
+                            player.start_fall_speed = 0.45 - player.start_speed_level * 0.005
                     elif active == 3:
                         if mode == 2:
                             mode = 0

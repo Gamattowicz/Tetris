@@ -32,7 +32,7 @@ def draw_menu(win, menu_title, buttons, width, height, active):
             draw_menu_button(win, v, i, (255, 255, 255), width, height)
 
 
-def pause(win, active, width, height, restart, main, main_menu, get_leaderboard):
+def pause(win, active, width, height, restart, main, main_menu, get_leaderboard, player):
     buttons = ['RESUME', 'RESTART', 'MAIN MENU', 'HIGH SCORES', 'EXIT']
     paused = True
 
@@ -63,7 +63,7 @@ def pause(win, active, width, height, restart, main, main_menu, get_leaderboard)
                         paused = False
                     elif active == 2:
                         restart()
-                        main(win)
+                        main(win, player)
                     elif active == 3:
                         main_menu(win)
                     elif active == 4:
