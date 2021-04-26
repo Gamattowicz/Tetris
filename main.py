@@ -171,13 +171,13 @@ def convert_shape_format(block):
 def draw_name(win, player):
     draw = True
     while draw:
-        for evt in pygame.event.get():
-            if evt.type == pygame.KEYDOWN:
-                if evt.unicode.isalpha():
-                    player.name += evt.unicode
-                elif evt.key == pygame.K_BACKSPACE:
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.unicode.isalpha():
+                    player.name += event.unicode
+                elif event.key == pygame.K_BACKSPACE:
                     player.name = player.name[:-1]
-                elif evt.key == pygame.K_RETURN or evt.type == pygame.QUIT:
+                elif event.key == pygame.K_RETURN or event.type == pygame.QUIT:
                     draw = False
         win.fill((0, 0, 0))
 
@@ -193,6 +193,9 @@ def draw_name(win, player):
         win.blit(block, rect)
         pygame.display.update()
 
+    if player.score > 0:
+        player.save_score(player.format_timer)
+    player.restart_stats()
     draw_lost_text(WIN, player)
 
 
@@ -358,10 +361,8 @@ def main(WIN, player):
         pygame.display.update()
 
         if check_lost(locked_pos):
-            if player.score > 0:
-                player.save_score(player.format_timer)
-            player.restart_stats()
             draw_name(WIN, player)
+
 
     pygame.display.quit()
 

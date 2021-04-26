@@ -45,10 +45,10 @@ class Player(object):
             f.seek(0)
             data = f.read(100)
             if len(data) == 0:
-                f.write('No.,Score,Time,Speed Level,Max Combo, Date, Name\n')
+                f.write('No.,Name,Score,Speed Level,Time,Max Combo,Date \n')
             else:
                 f.write('\n')
-            f.write(f'{str(self.score)},{formatted_timer},{self.speed_level},{self.max_combo},{date.today()},{self.name}')
+            f.write(f'{self.name},{str(self.score)},{self.speed_level},{formatted_timer()},{self.max_combo},{date.today()}')
 
     def get_score_factor(self):
         score_factor = self.speed_level + self.combo * 10
