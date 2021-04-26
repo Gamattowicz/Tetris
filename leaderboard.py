@@ -38,13 +38,16 @@ def draw_leaderboard(win, leaderboard, width, height):
 
 
 def get_leaderboard(win, width, height):
-    rows = []
+    rows = [['No.', 'Name', 'Score', 'Speed Level', 'Time', 'Max Combo', 'Date']]
     with open('scores.csv', 'a+') as f:
         f.seek(0)
         reader = csv.reader(f, delimiter=',')
         for row in reader:
             rows.append(row)
-    leaderboard = [rows[0]] + sorted(rows[1:], key=lambda x: int(x[1]), reverse=True)[:10]
+    try:
+        leaderboard = [rows[0]] + sorted(rows[1:], key=lambda x: int(x[1]), reverse=True)[:10]
+    except:
+        leaderboard = [rows[0]]
 
     high_scores = True
 
