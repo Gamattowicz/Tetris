@@ -334,6 +334,11 @@ def main(WIN, player):
                     current_piece.rotation += 1
                     if not (valid_space(current_piece, grid, convert_shape_format)):
                         current_piece.rotation -= 1
+                elif event.key == pygame.K_RETURN:
+                    for i in range(20):
+                        current_piece.y += 1
+                        if not (valid_space(current_piece, grid, convert_shape_format)):
+                            current_piece.y -= 1
                 elif event.key == pygame.K_ESCAPE:
                     pause(WIN, active, WIDTH, HEIGHT, player.restart_stats, main, main_menu, get_leaderboard, player)
 
