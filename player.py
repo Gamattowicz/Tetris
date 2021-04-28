@@ -54,3 +54,4 @@ class Player(object):
         self.max_combo = 0
         self.speed_level = self.start_speed_level
         self.fall_speed = self.start_fall_speed
+        self.name = ''
