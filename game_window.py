@@ -7,6 +7,7 @@ SCORE_FONT = pygame.font.SysFont('arial', 25)
 SHAPE_FONT = pygame.font.SysFont('arial', 20)
 
 BACKGROUND_COLOR = (11, 12, 16)
+FRAME_COLOR = (102, 252, 241)
 
 
 def draw_window(surface, grid, start_x, start_y, width, height, block_size, draw_grid):
@@ -23,7 +24,7 @@ def draw_window(surface, grid, start_x, start_y, width, height, block_size, draw
                                                    block_size, block_size), 0)
 
     # draw border of box
-    pygame.draw.rect(surface, (255, 0, 0), (start_x, start_y, width, height), 5)
+    pygame.draw.rect(surface, FRAME_COLOR, (start_x, start_y, width, height), 5)
 
     draw_grid(surface, grid, start_x, start_y, block_size, width, height)
 
@@ -68,12 +69,12 @@ def draw_next_shape(shape, surface, score, start_x, start_y, width, height, bloc
                 pygame.draw.rect(surface, shape.color, (preview_x + j * block_size, preview_y + i * block_size,
                                                         block_size, block_size), 0)
     # draw horizontal borders
-    pygame.draw.line(surface, (255, 0, 0), (preview_x, preview_y - block_size),
+    pygame.draw.line(surface, FRAME_COLOR, (preview_x, preview_y - block_size),
                      (preview_x + 5 * block_size, preview_y - block_size), width=3)
-    pygame.draw.line(surface, (255, 0, 0), (preview_x, preview_y + 5 * block_size),
+    pygame.draw.line(surface, FRAME_COLOR, (preview_x, preview_y + 5 * block_size),
                      (preview_x + 5 * block_size, preview_y + 5 * block_size), width=3)
     # draw vertical borders
-    pygame.draw.line(surface, (255, 0, 0), (preview_x, preview_y - block_size),
+    pygame.draw.line(surface, FRAME_COLOR, (preview_x, preview_y - block_size),
                      (preview_x, preview_y + 5 * block_size), width=3)
-    pygame.draw.line(surface, (255, 0, 0), (preview_x + 5 * block_size, preview_y - block_size),
+    pygame.draw.line(surface, FRAME_COLOR, (preview_x + 5 * block_size, preview_y - block_size),
                      (preview_x + 5 * block_size, preview_y + 5 * block_size), width=3)

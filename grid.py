@@ -1,5 +1,7 @@
 import pygame
 
+GRID_COLOR = (69, 162, 158)
+
 
 def create_grid(locked_pos={}):
     grid = [[(0, 0, 0) for i in range(10)] for i in range(20)]
@@ -14,8 +16,8 @@ def create_grid(locked_pos={}):
 
 def draw_grid(surface, grid, start_x, start_y, block_size, width, height):
     for i in range(len(grid)):
-        pygame.draw.line(surface, (128, 128, 128), (start_x, start_y + i * block_size),
+        pygame.draw.line(surface, GRID_COLOR, (start_x, start_y + i * block_size),
                          (start_x + width, start_y + i * block_size))
         for j in range(len(grid[i])):
-            pygame.draw.line(surface, (128, 128, 128), (start_x + j * block_size, start_y),
+            pygame.draw.line(surface, GRID_COLOR, (start_x + j * block_size, start_y),
                              (start_x + j * block_size, start_y + height))
