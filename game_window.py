@@ -2,9 +2,9 @@ import pygame
 
 pygame.font.init()
 
-TITLE_FONT = pygame.font.SysFont('arial', 60)
-SCORE_FONT = pygame.font.SysFont('arial', 25)
-SHAPE_FONT = pygame.font.SysFont('arial', 20)
+TITLE_FONT = pygame.font.Font('Raleway-SemiBold.ttf', 60)
+SCORE_FONT = pygame.font.Font('Montserrat-SemiBold.ttf', 25)
+SHAPE_FONT = pygame.font.Font('Montserrat-SemiBold.ttf', 20)
 
 BACKGROUND_COLOR = (11, 12, 16)
 FRAME_COLOR = (102, 252, 241)

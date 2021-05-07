@@ -3,8 +3,8 @@ import sys
 
 pygame.font.init()
 
-TITLE_FONT = pygame.font.SysFont('arial', 60)
-BUTTON_FONT = pygame.font.SysFont('arial', 25)
+TITLE_FONT = pygame.font.Font('Raleway-SemiBold.ttf', 60)
+BUTTON_FONT = pygame.font.Font('Montserrat-SemiBold.ttf', 25)
 
 BACKGROUND_COLOR = (11, 12, 16)
 TEXT_COLOR = (197, 198, 199)

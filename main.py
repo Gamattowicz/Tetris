@@ -9,7 +9,7 @@ from validation import valid_space, check_lost
 from game_window import draw_window, draw_next_shape
 
 # SIZE OF SCREEN
-WIDTH, HEIGHT = 800, 700
+WIDTH, HEIGHT = 1100, 750
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('TETRIS')
 pygame.init()
@@ -23,10 +23,10 @@ START_BOX_X = (WIDTH - BOX_WIDTH) // 2
 START_BOX_Y = HEIGHT - BOX_HEIGHT
 
 # FONTS
-TITLE_FONT = pygame.font.SysFont('arial', 60)
-PREVIEW_FONT = pygame.font.SysFont('arial', 20)
-SCORE_FONT = pygame.font.SysFont('arial', 25)
-LOST_FONT = pygame.font.SysFont('arial', 95)
+TITLE_FONT = pygame.font.Font('Raleway-SemiBold.ttf', 60)
+PREVIEW_FONT = pygame.font.Font('Montserrat-SemiBold.ttf', 20)
+SCORE_FONT = pygame.font.Font('Montserrat-SemiBold.ttf', 25)
+LOST_FONT = pygame.font.Font('Raleway-SemiBold.ttf', 95)
 
 # COLORS
 BACKGROUND_COLOR = (11, 12, 16)
