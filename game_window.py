@@ -8,13 +8,14 @@ SHAPE_FONT = pygame.font.SysFont('arial', 20)
 
 BACKGROUND_COLOR = (11, 12, 16)
 FRAME_COLOR = (102, 252, 241)
+TEXT_COLOR = (197, 198, 199)
 
 
 def draw_window(surface, grid, start_x, start_y, width, height, block_size, draw_grid):
     surface.fill(BACKGROUND_COLOR)
 
     # draw title over the box
-    title = TITLE_FONT.render('TETRIS', True, (255, 255, 255))
+    title = TITLE_FONT.render('TETRIS', True, TEXT_COLOR)
     surface.blit(title, (start_x + width / 2 - (title.get_width() / 2), 20))
 
     # draw each brick
@@ -32,7 +33,7 @@ def draw_window(surface, grid, start_x, start_y, width, height, block_size, draw
 def draw_next_shape(shape, surface, score, start_x, start_y, width, height, block_size, get_max_score, format_timer,
                     speed_level, combo, max_combo):
     # draw preview next block
-    text = SHAPE_FONT.render('Next Block', True, (255, 255, 255))
+    text = SHAPE_FONT.render('Next Block', True, TEXT_COLOR)
 
     preview_x = start_x + width + 50
     preview_y = start_y + height / 2 - 100
@@ -40,27 +41,27 @@ def draw_next_shape(shape, surface, score, start_x, start_y, width, height, bloc
     format = shape.shape[shape.rotation % len(shape.shape)]
 
     # draw score
-    label = SCORE_FONT.render(f'SCORE: {score}', True, (255, 255, 255))
+    label = SCORE_FONT.render(f'SCORE: {score}', True, TEXT_COLOR)
     surface.blit(label, (preview_x + 2.5 * block_size - label.get_width() / 2, preview_y - 80 - block_size))
 
     # draw max score
-    label = SCORE_FONT.render(f'MAX SCORE: {get_max_score() if get_max_score() else 0}', True, (255, 255, 255))
+    label = SCORE_FONT.render(f'MAX SCORE: {get_max_score() if get_max_score() else 0}', True, TEXT_COLOR)
     surface.blit(label, (start_x/2 - label.get_width()/2, preview_y - 80 - block_size))
 
     # draw timer
-    label = SCORE_FONT.render(f'TIMER: {format_timer()}', True, (255, 255, 255))
+    label = SCORE_FONT.render(f'TIMER: {format_timer()}', True, TEXT_COLOR)
     surface.blit(label, (start_x/2 - label.get_width()/2, preview_y - 40))
 
     # draw speed value
-    label = SCORE_FONT.render(f'SPEED LEVEL: {speed_level}', True, (255, 255, 255))
+    label = SCORE_FONT.render(f'SPEED LEVEL: {speed_level}', True, TEXT_COLOR)
     surface.blit(label, (start_x/2 - label.get_width()/2, preview_y + 30))
 
     # draw combo
-    label = SCORE_FONT.render(f'COMBO: {combo}', True, (255, 255, 255))
+    label = SCORE_FONT.render(f'COMBO: {combo}', True, TEXT_COLOR)
     surface.blit(label, (start_x/2 - label.get_width()/2, preview_y + 100))
 
     # max combo
-    label = SCORE_FONT.render(f'MAX COMBO: {max_combo}', True, (255, 255, 255))
+    label = SCORE_FONT.render(f'MAX COMBO: {max_combo}', True, TEXT_COLOR)
     surface.blit(label, (start_x/2 - label.get_width()/2, preview_y + 170))
 
     for i, row in enumerate(format):

@@ -33,6 +33,7 @@ BACKGROUND_COLOR = (11, 12, 16)
 GRID_COLOR = (69, 162, 158)
 FRAME_COLOR = (102, 252, 241)
 TEXT_COLOR = (197, 198, 199)
+BLOCK_COLOR = (31, 40, 51)
 
 # SHAPE FORMATS
 S = [['.....',
@@ -187,13 +188,13 @@ def draw_name(win, player):
                     draw = False
         win.fill(BACKGROUND_COLOR)
 
-        lost_text = LOST_FONT.render('YOU LOST!', True, (255, 255, 255))
+        lost_text = LOST_FONT.render('YOU LOST!', True, TEXT_COLOR)
         WIN.blit(lost_text, (WIDTH / 2 - lost_text.get_width() / 2, HEIGHT / 10))
 
-        input_text = TITLE_FONT.render('Enter your name:', True, (255, 255, 255))
+        input_text = TITLE_FONT.render('Enter your name:', True, TEXT_COLOR)
         WIN.blit(input_text, (WIDTH / 2 - input_text.get_width() / 2, HEIGHT / 4 + 50))
 
-        block = PREVIEW_FONT.render(player.name, True, (255, 255, 255))
+        block = PREVIEW_FONT.render(player.name, True, TEXT_COLOR)
         rect = block.get_rect()
         rect.center = win.get_rect().center
         win.blit(block, rect)
@@ -212,7 +213,7 @@ def draw_lost_text(WIN, player):
     while lost:
         WIN.fill(BACKGROUND_COLOR)
 
-        retry_text = TITLE_FONT.render('Do you want to play again?', True, (255, 255, 255))
+        retry_text = TITLE_FONT.render('Do you want to play again?', True, TEXT_COLOR)
         WIN.blit(retry_text, (WIDTH / 2 - retry_text.get_width() / 2, HEIGHT / 5))
 
         retry_options = [('YES', 150), ('NO', - 150)]
@@ -220,7 +221,7 @@ def draw_lost_text(WIN, player):
             if i == active:
                 label = TITLE_FONT.render(v[0], True, (255, 0, 0))
             else:
-                label = TITLE_FONT.render(v[0], True, (255, 255, 255))
+                label = TITLE_FONT.render(v[0], True, TEXT_COLOR)
             WIN.blit(label, (WIDTH / 2 - label.get_width() / 2 - v[1], HEIGHT / 3 + 100))
         pygame.display.update()
 
@@ -251,7 +252,7 @@ def clear_rows(grid, lock, player):
     num_del = 0  # number of row to delete
     for i in range(len(grid) - 1, -1, -1):
         row = grid[i]
-        if (0, 0, 0) not in row:
+        if BLOCK_COLOR not in row:
             num_del += 1
             ind = i  # index of row to delete
             for j in range(len(row)):

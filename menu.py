@@ -7,6 +7,7 @@ TITLE_FONT = pygame.font.SysFont('arial', 60)
 BUTTON_FONT = pygame.font.SysFont('arial', 25)
 
 BACKGROUND_COLOR = (11, 12, 16)
+TEXT_COLOR = (197, 198, 199)
 
 
 def draw_menu_button(win, text, row, color, width, height):
@@ -24,14 +25,14 @@ def draw_menu_button(win, text, row, color, width, height):
 
 
 def draw_menu(win, menu_title, buttons, width, height, active):
-    menu_text = TITLE_FONT.render(menu_title, True, (255, 255, 255))
+    menu_text = TITLE_FONT.render(menu_title, True, TEXT_COLOR)
     win.blit(menu_text, (width / 2 - menu_text.get_width() / 2, height / 2 - 250))
 
     for i, v in enumerate(buttons, start=1):
         if i == active:
             draw_menu_button(win, v, i, (255, 0, 0), width, height)
         else:
-            draw_menu_button(win, v, i, (255, 255, 255), width, height)
+            draw_menu_button(win, v, i, TEXT_COLOR, width, height)
 
 
 def pause(win, active, width, height, restart, main, main_menu, get_leaderboard, player):

@@ -1,5 +1,8 @@
+BLOCK_COLOR = (31, 40, 51)
+
+
 def valid_space(shape, grid, convert_shape_format):
-    free_pos = [[(j, i) for j in range(10) if grid[i][j] == (0, 0, 0)] for i in range(20)]
+    free_pos = [[(j, i) for j in range(10) if grid[i][j] == BLOCK_COLOR] for i in range(20)]
     free_pos = [j for sub in free_pos for j in sub]
 
     formatted = convert_shape_format(shape)
