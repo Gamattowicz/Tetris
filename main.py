@@ -28,6 +28,12 @@ PREVIEW_FONT = pygame.font.SysFont('arial', 20)
 SCORE_FONT = pygame.font.SysFont('arial', 25)
 LOST_FONT = pygame.font.SysFont('arial', 95)
 
+# COLORS
+BACKGROUND_COLOR = (11, 12, 16)
+GRID_COLOR = (69, 162, 158)
+FRAME_COLOR = (102, 252, 241)
+TEXT_COLOR = (197, 198, 199)
+
 # SHAPE FORMATS
 S = [['.....',
       '......',
@@ -179,7 +185,7 @@ def draw_name(win, player):
                     player.name = player.name[:-1]
                 elif event.key == pygame.K_RETURN or event.type == pygame.QUIT:
                     draw = False
-        win.fill((0, 0, 0))
+        win.fill(BACKGROUND_COLOR)
 
         lost_text = LOST_FONT.render('YOU LOST!', True, (255, 255, 255))
         WIN.blit(lost_text, (WIDTH / 2 - lost_text.get_width() / 2, HEIGHT / 10))
@@ -204,7 +210,7 @@ def draw_lost_text(WIN, player):
     lost = True
 
     while lost:
-        WIN.fill((0, 0, 0))
+        WIN.fill(BACKGROUND_COLOR)
 
         retry_text = TITLE_FONT.render('Do you want to play again?', True, (255, 255, 255))
         WIN.blit(retry_text, (WIDTH / 2 - retry_text.get_width() / 2, HEIGHT / 5))
@@ -379,7 +385,7 @@ def main_menu(WIN):
     modes = ['ENDLESS (CONSTANT SPEED)', 'SURVIVAL (INCREASING SPEED WHEN SCORING POINTS)',
              'HARDCORE (INCREASING SPEED OVER TIME)']
     while run:
-        WIN.fill((0, 0, 0))
+        WIN.fill(BACKGROUND_COLOR)
         buttons = ['NEW GAME', f'SPEED: {speeds[player.speed]}', f'MODE: {modes[mode]}', 'LEADERBOARD', 'EXIT']
         draw_menu(WIN, 'MAIN MENU', buttons, WIDTH, HEIGHT, active)
         pygame.display.update()

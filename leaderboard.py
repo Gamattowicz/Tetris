@@ -7,6 +7,8 @@ pygame.font.init()
 TITLE_FONT = pygame.font.SysFont('arial', 60)
 SCORE_FONT = pygame.font.SysFont('arial', 25)
 
+BACKGROUND_COLOR = (11, 12, 16)
+
 
 def draw_leaderboard(win, leaderboard, width, height):
     menu_text = TITLE_FONT.render('LEADERBOARD', True, (255, 255, 255))
@@ -52,7 +54,7 @@ def get_leaderboard(win, width, height):
     high_scores = True
 
     while high_scores:
-        win.fill((0, 0, 0))
+        win.fill(BACKGROUND_COLOR)
         draw_leaderboard(win, leaderboard, width, height)
         pygame.display.update()
 

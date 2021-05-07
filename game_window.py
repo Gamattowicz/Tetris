@@ -6,9 +6,11 @@ TITLE_FONT = pygame.font.SysFont('arial', 60)
 SCORE_FONT = pygame.font.SysFont('arial', 25)
 SHAPE_FONT = pygame.font.SysFont('arial', 20)
 
+BACKGROUND_COLOR = (11, 12, 16)
+
 
 def draw_window(surface, grid, start_x, start_y, width, height, block_size, draw_grid):
-    surface.fill((0, 0, 0))
+    surface.fill(BACKGROUND_COLOR)
 
     # draw title over the box
     title = TITLE_FONT.render('TETRIS', True, (255, 255, 255))
