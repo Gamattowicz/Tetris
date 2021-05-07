@@ -16,7 +16,7 @@ def draw_window(surface, grid, start_x, start_y, width, height, block_size, draw
 
     # draw title over the box
     title = TITLE_FONT.render('TETRIS', True, TEXT_COLOR)
-    surface.blit(title, (start_x + width / 2 - (title.get_width() / 2), 20))
+    surface.blit(title, (start_x + width / 2 - (title.get_width() / 2), start_y / 2 - title.get_height() / 2))
 
     # draw each brick
     for i in range(len(grid)):
