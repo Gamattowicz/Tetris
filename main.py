@@ -1,12 +1,12 @@
 import pygame
 import random
 import sys
-from grid import create_grid, draw_grid
+from grid import create_grid, draw_grid, BLOCK_COLOR
 from player import Player
 from leaderboard import get_leaderboard
 from menu import draw_menu, pause
 from validation import valid_space, check_lost
-from game_window import draw_window, draw_next_shape
+from game_window import draw_window, draw_next_shape, BACKGROUND_COLOR, TITLE_FONT, TEXT_COLOR
 
 # SIZE OF SCREEN
 WIDTH, HEIGHT = 1100, 750
@@ -23,17 +23,8 @@ START_BOX_X = (WIDTH - BOX_WIDTH) // 2
 START_BOX_Y = (HEIGHT - BOX_HEIGHT) // 2
 
 # FONTS
-TITLE_FONT = pygame.font.Font('Raleway-SemiBold.ttf', 60)
 PREVIEW_FONT = pygame.font.Font('Montserrat-SemiBold.ttf', 20)
-SCORE_FONT = pygame.font.Font('Montserrat-SemiBold.ttf', 25)
 LOST_FONT = pygame.font.Font('Raleway-SemiBold.ttf', 95)
-
-# COLORS
-BACKGROUND_COLOR = (11, 12, 16)
-GRID_COLOR = (69, 162, 158)
-FRAME_COLOR = (102, 252, 241)
-TEXT_COLOR = (197, 198, 199)
-BLOCK_COLOR = (31, 40, 51)
 
 # SHAPE FORMATS
 S = [['.....',

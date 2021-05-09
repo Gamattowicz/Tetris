@@ -6,9 +6,9 @@ TITLE_FONT = pygame.font.Font('Raleway-SemiBold.ttf', 60)
 SCORE_FONT = pygame.font.Font('Montserrat-SemiBold.ttf', 25)
 SHAPE_FONT = pygame.font.Font('Montserrat-SemiBold.ttf', 20)
 
-BACKGROUND_COLOR = (11, 12, 16)
-FRAME_COLOR = (102, 252, 241)
-TEXT_COLOR = (197, 198, 199)
+BACKGROUND_COLOR = (220, 225, 227)
+FRAME_COLOR = (63, 176, 172)
+TEXT_COLOR = (23, 62, 67)
 
 
 def draw_window(surface, grid, start_x, start_y, width, height, block_size, draw_grid):

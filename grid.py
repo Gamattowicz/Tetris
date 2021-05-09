@@ -1,7 +1,8 @@
 import pygame
+from game_window import FRAME_COLOR
 
-GRID_COLOR = (69, 162, 158)
-BLOCK_COLOR = (31, 40, 51)
+GRID_COLOR = FRAME_COLOR
+BLOCK_COLOR = (250, 230, 150)
 
 
 def create_grid(locked_pos={}):

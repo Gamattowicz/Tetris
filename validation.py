@@ -1,4 +1,4 @@
-BLOCK_COLOR = (31, 40, 51)
+from grid import BLOCK_COLOR
 
 
 def valid_space(shape, grid, convert_shape_format):

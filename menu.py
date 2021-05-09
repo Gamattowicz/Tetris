@@ -1,13 +1,10 @@
 import pygame
 import sys
+from game_window import TITLE_FONT, BACKGROUND_COLOR, TEXT_COLOR
 
 pygame.font.init()
 
-TITLE_FONT = pygame.font.Font('Raleway-SemiBold.ttf', 60)
 BUTTON_FONT = pygame.font.Font('Montserrat-SemiBold.ttf', 25)
-
-BACKGROUND_COLOR = (11, 12, 16)
-TEXT_COLOR = (197, 198, 199)
 
 
 def draw_menu_button(win, text, row, color, width, height):
