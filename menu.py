@@ -5,6 +5,7 @@ from game_window import TITLE_FONT, BACKGROUND_COLOR, TEXT_COLOR
 pygame.font.init()
 
 BUTTON_FONT = pygame.font.Font('Montserrat-SemiBold.ttf', 25)
+ACTIVE_COLOR = (234, 113, 134)
 
 
 def draw_menu_button(win, text, row, color, width, height):
@@ -27,7 +28,7 @@ def draw_menu(win, menu_title, buttons, width, height, active):
 
     for i, v in enumerate(buttons, start=1):
         if i == active:
-            draw_menu_button(win, v, i, (255, 0, 0), width, height)
+            draw_menu_button(win, v, i, ACTIVE_COLOR, width, height)
         else:
             draw_menu_button(win, v, i, TEXT_COLOR, width, height)
 

@@ -4,7 +4,7 @@ import sys
 from grid import create_grid, draw_grid, BLOCK_COLOR
 from player import Player
 from leaderboard import get_leaderboard
-from menu import draw_menu, pause
+from menu import draw_menu, pause, ACTIVE_COLOR
 from validation import valid_space, check_lost
 from game_window import draw_window, draw_next_shape, BACKGROUND_COLOR, TITLE_FONT, TEXT_COLOR
 
@@ -203,14 +203,12 @@ def draw_lost_text(WIN, player):
 
     while lost:
         WIN.fill(BACKGROUND_COLOR)
-
         retry_text = TITLE_FONT.render('Do you want to play again?', True, TEXT_COLOR)
         WIN.blit(retry_text, (WIDTH / 2 - retry_text.get_width() / 2, HEIGHT / 5))
-
         retry_options = [('YES', 150), ('NO', - 150)]
         for i, v in enumerate(retry_options, start=1):
             if i == active:
-                label = TITLE_FONT.render(v[0], True, (255, 0, 0))
+                label = TITLE_FONT.render(v[0], True, ACTIVE_COLOR)
             else:
                 label = TITLE_FONT.render(v[0], True, TEXT_COLOR)
             WIN.blit(label, (WIDTH / 2 - label.get_width() / 2 - v[1], HEIGHT / 3 + 100))
