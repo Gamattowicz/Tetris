@@ -1,6 +1,6 @@
 import pygame
 import sys
-from game_window import TITLE_FONT, SCORE_FONT, BACKGROUND_COLOR, TEXT_COLOR
+from board import TITLE_FONT, SCORE_FONT, BACKGROUND_COLOR, TEXT_COLOR
 
 pygame.font.init()
 

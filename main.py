@@ -6,7 +6,7 @@ from player import Player
 from leaderboard import get_leaderboard
 from menu import draw_menu, pause, ACTIVE_COLOR
 from validation import valid_space, check_lost
-from game_window import draw_window, draw_next_shape, BACKGROUND_COLOR, TEXT_COLOR, TITLE_FONT, SCORE_FONT
+from board import Board, BACKGROUND_COLOR, TEXT_COLOR, TITLE_FONT, SCORE_FONT
 
 # SIZE OF SCREEN
 WIDTH, HEIGHT = 1100, 750
@@ -15,12 +15,12 @@ pygame.display.set_caption('TETRIS')
 pygame.init()
 
 # SIZE OF BOX
-BLOCK_SIZE: int = 30
+BLOCK_SIZE = 30
 BOX_WIDTH, BOX_HEIGHT = 10 * BLOCK_SIZE, 20 * BLOCK_SIZE
 
 # BEGIN POINT OF BOX
 START_BOX_X = (WIDTH - BOX_WIDTH) // 2
-START_BOX_Y = (HEIGHT - BOX_HEIGHT) // 2
+START_BOX_Y = (HEIGHT - BOX_HEIGHT) - 30
 
 # SHAPE FORMATS
 S = [['.....',
@@ -273,6 +273,7 @@ def main(WIN, player):
     fall_time = 0
     hardcore_time = 0
     time_elapsed = 0
+    board = Board(WIDTH, HEIGHT, BLOCK_SIZE, BOX_WIDTH, BOX_HEIGHT)
 
     player.restart_stats()
 
@@ -351,9 +352,9 @@ def main(WIN, player):
             change_piece = False
             player.score += clear_rows(grid, locked_pos, player) * player.get_score_factor()
 
-        draw_window(WIN, grid, START_BOX_X, START_BOX_Y, BOX_WIDTH, BOX_HEIGHT, BLOCK_SIZE, draw_grid)
-        draw_next_shape(next_piece, WIN, player.score, START_BOX_X, START_BOX_Y, BOX_WIDTH, BOX_HEIGHT, BLOCK_SIZE,
-                        player.get_max_score, player.format_timer, player.speed_level, player.combo, player.max_combo)
+        board.draw_window(WIN, grid, draw_grid)
+        board.draw_next_shape(next_piece, WIN, player.score, player.get_max_score, player.format_timer,
+                              player.speed_level, player.combo, player.max_combo)
         pygame.display.update()
 
         if check_lost(locked_pos):

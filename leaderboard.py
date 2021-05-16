@@ -1,7 +1,7 @@
 import pygame
 import csv
 import sys
-from game_window import TITLE_FONT, SCORE_FONT, BACKGROUND_COLOR, TEXT_COLOR
+from board import TITLE_FONT, SCORE_FONT, BACKGROUND_COLOR, TEXT_COLOR
 
 
 def draw_leaderboard(win, leaderboard, width, height):

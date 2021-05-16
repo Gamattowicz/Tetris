@@ -1,5 +1,5 @@
 import pygame
-from game_window import FRAME_COLOR
+from board import FRAME_COLOR
 
 GRID_COLOR = FRAME_COLOR
 BLOCK_COLOR = (250, 210, 204)
