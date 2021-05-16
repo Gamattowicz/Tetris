@@ -2,6 +2,7 @@ import pygame
 import csv
 import sys
 from board import TITLE_FONT, SCORE_FONT, BACKGROUND_COLOR, TEXT_COLOR
+from menu import ACTIVE_COLOR
 
 
 def draw_leaderboard(win, leaderboard, width, height):
@@ -14,7 +15,7 @@ def draw_leaderboard(win, leaderboard, width, height):
         for index, j in enumerate(v):
             # draw title row
             if i == 0:
-                label = SCORE_FONT.render(j, True, TEXT_COLOR)
+                label = SCORE_FONT.render(j, True, ACTIVE_COLOR)
                 button_x = width / 2 - label.get_width() / 2
                 win.blit(label, (button_x + width_btn, height/ 3 - 100))
             else:
