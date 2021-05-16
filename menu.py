@@ -1,10 +1,9 @@
 import pygame
 import sys
-from game_window import TITLE_FONT, BACKGROUND_COLOR, TEXT_COLOR
+from game_window import TITLE_FONT, SCORE_FONT, BACKGROUND_COLOR, TEXT_COLOR
 
 pygame.font.init()
 
-BUTTON_FONT = pygame.font.Font('Montserrat-SemiBold.ttf', 25)
 ACTIVE_COLOR = (234, 113, 134)
 
 
@@ -17,7 +16,7 @@ def draw_menu_button(win, text, row, color, width, height):
         5: -50
     }
 
-    label = BUTTON_FONT.render(text, True, color)
+    label = SCORE_FONT.render(text, True, color)
     button_x = width / 2 - label.get_width() / 2
     win.blit(label, (button_x, height / 2 - rows_height[row]))
 

@@ -6,7 +6,7 @@ from player import Player
 from leaderboard import get_leaderboard
 from menu import draw_menu, pause, ACTIVE_COLOR
 from validation import valid_space, check_lost
-from game_window import draw_window, draw_next_shape, BACKGROUND_COLOR, TITLE_FONT, TEXT_COLOR
+from game_window import draw_window, draw_next_shape, BACKGROUND_COLOR, TEXT_COLOR, TITLE_FONT, SCORE_FONT
 
 # SIZE OF SCREEN
 WIDTH, HEIGHT = 1100, 750
@@ -21,10 +21,6 @@ BOX_WIDTH, BOX_HEIGHT = 10 * BLOCK_SIZE, 20 * BLOCK_SIZE
 # BEGIN POINT OF BOX
 START_BOX_X = (WIDTH - BOX_WIDTH) // 2
 START_BOX_Y = (HEIGHT - BOX_HEIGHT) // 2
-
-# FONTS
-PREVIEW_FONT = pygame.font.Font('Montserrat-SemiBold.ttf', 20)
-LOST_FONT = pygame.font.Font('Raleway-SemiBold.ttf', 95)
 
 # SHAPE FORMATS
 S = [['.....',
@@ -179,13 +175,13 @@ def draw_name(win, player):
                     draw = False
         win.fill(BACKGROUND_COLOR)
 
-        lost_text = LOST_FONT.render('YOU LOST!', True, TEXT_COLOR)
+        lost_text = TITLE_FONT.render('YOU LOST!', True, TEXT_COLOR)
         WIN.blit(lost_text, (WIDTH / 2 - lost_text.get_width() / 2, HEIGHT / 10))
 
         input_text = TITLE_FONT.render('Enter your name:', True, TEXT_COLOR)
         WIN.blit(input_text, (WIDTH / 2 - input_text.get_width() / 2, HEIGHT / 4 + 50))
 
-        block = PREVIEW_FONT.render(player.name, True, TEXT_COLOR)
+        block = SCORE_FONT.render(player.name, True, TEXT_COLOR)
         rect = block.get_rect()
         rect.center = win.get_rect().center
         win.blit(block, rect)

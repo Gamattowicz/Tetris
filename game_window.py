@@ -2,9 +2,8 @@ import pygame
 
 pygame.font.init()
 
-TITLE_FONT = pygame.font.Font('Raleway-SemiBold.ttf', 60)
-SCORE_FONT = pygame.font.Font('Montserrat-SemiBold.ttf', 25)
-SHAPE_FONT = pygame.font.Font('Montserrat-SemiBold.ttf', 20)
+TITLE_FONT = pygame.font.Font('Maler.ttf', 65)
+SCORE_FONT = pygame.font.Font('LeagueMono-Bold.ttf', 23)
 
 BACKGROUND_COLOR = (235, 232, 231)
 FRAME_COLOR = (221, 155, 207)
@@ -33,11 +32,11 @@ def draw_window(surface, grid, start_x, start_y, width, height, block_size, draw
 def draw_next_shape(shape, surface, score, start_x, start_y, width, height, block_size, get_max_score, format_timer,
                     speed_level, combo, max_combo):
     # draw preview next block
-    text = SHAPE_FONT.render('Next Block', True, TEXT_COLOR)
+    text = SCORE_FONT.render('Next Block', True, TEXT_COLOR)
 
     preview_x = start_x + width + 50
     preview_y = start_y + height / 2 - 100
-    surface.blit(text, (preview_x + 2.5 * block_size - text.get_width() / 2, preview_y - 30 - block_size))
+    surface.blit(text, (preview_x + 2.5 * block_size - text.get_width() / 2, preview_y - 50 - block_size))
     format = shape.shape[shape.rotation % len(shape.shape)]
 
     # draw score
