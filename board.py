@@ -74,15 +74,15 @@ class Board:
         for i, row in enumerate(format):
             for j, column in enumerate(row):
                 if column == '0':
-                    pygame.draw.rect(surface, shape.color, (preview_x + j * self.block_size, preview_y + (i - 1) * self.block_size,
+                    pygame.draw.rect(surface, shape.color, (preview_x + (j + 1.5) * self.block_size, preview_y + (i - 1) * self.block_size,
                                                             self.block_size, self.block_size), 0)
         # draw horizontal borders
-        pygame.draw.line(surface, FRAME_COLOR, (preview_x, preview_y - 2 * self.block_size),
-                         (preview_x + 5 * self.block_size, preview_y - 2 * self.block_size), width=3)
-        pygame.draw.line(surface, FRAME_COLOR, (preview_x, preview_y + 4 * self.block_size),
-                         (preview_x + 5 * self.block_size, preview_y + 4 * self.block_size), width=3)
+        pygame.draw.line(surface, FRAME_COLOR, (preview_x + 1.5 * self.block_size, preview_y - 2 * self.block_size),
+                         (preview_x + 6.5 * self.block_size, preview_y - 2 * self.block_size), width=3)
+        pygame.draw.line(surface, FRAME_COLOR, (preview_x + 1.5 * self.block_size, preview_y + 4 * self.block_size),
+                         (preview_x + 6.5 * self.block_size, preview_y + 4 * self.block_size), width=3)
         # draw vertical borders
-        pygame.draw.line(surface, FRAME_COLOR, (preview_x, preview_y - 2 * self.block_size),
-                         (preview_x, preview_y + 4 * self.block_size), width=3)
-        pygame.draw.line(surface, FRAME_COLOR, (preview_x + 5 * self.block_size, preview_y - 2 * self.block_size),
-                         (preview_x + 5 * self.block_size, preview_y + 4 * self.block_size), width=3)
+        pygame.draw.line(surface, FRAME_COLOR, (preview_x + 1.5 * self.block_size, preview_y - 2 * self.block_size),
+                         (preview_x + 1.5 * self.block_size, preview_y + 4 * self.block_size), width=3)
+        pygame.draw.line(surface, FRAME_COLOR, (preview_x + 6.5 * self.block_size, preview_y - 2 * self.block_size),
+                         (preview_x + 6.5 * self.block_size, preview_y + 4 * self.block_size), width=3)
