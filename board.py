@@ -44,12 +44,12 @@ class Board:
 
         preview_x = self.start_x + self.box_width + 50
         preview_y = self.start_y + self.box_height / 2 - 100
-        surface.blit(text, (preview_x + 2.5 * self.block_size - text.get_width() / 2, preview_y - 50 - self.block_size))
+        surface.blit(text, (preview_x + 2.5 * self.block_size - text.get_width() / 2, preview_y - 80 - self.block_size))
         format = shape.shape[shape.rotation % len(shape.shape)]
 
         # draw score
         label = SCORE_FONT.render(f'SCORE: {score}', True, TEXT_COLOR)
-        surface.blit(label, (preview_x + 2.5 * self.block_size - label.get_width() / 2, preview_y - 80 - self.block_size))
+        surface.blit(label, (preview_x + 2.5 * self.block_size - label.get_width() / 2, preview_y - 10 - self.block_size))
 
         # draw max score
         label = SCORE_FONT.render(f'MAX SCORE: {get_max_score() if get_max_score() else 0}', True, TEXT_COLOR)
@@ -74,15 +74,15 @@ class Board:
         for i, row in enumerate(format):
             for j, column in enumerate(row):
                 if column == '0':
-                    pygame.draw.rect(surface, shape.color, (preview_x + j * self.block_size, preview_y + i * self.block_size,
+                    pygame.draw.rect(surface, shape.color, (preview_x + j * self.block_size, preview_y + (i - 1) * self.block_size,
                                                             self.block_size, self.block_size), 0)
         # draw horizontal borders
-        pygame.draw.line(surface, FRAME_COLOR, (preview_x, preview_y - self.block_size),
-                         (preview_x + 5 * self.block_size, preview_y - self.block_size), width=3)
-        pygame.draw.line(surface, FRAME_COLOR, (preview_x, preview_y + 5 * self.block_size),
-                         (preview_x + 5 * self.block_size, preview_y + 5 * self.block_size), width=3)
+        pygame.draw.line(surface, FRAME_COLOR, (preview_x, preview_y - 2 * self.block_size),
+                         (preview_x + 5 * self.block_size, preview_y - 2 * self.block_size), width=3)
+        pygame.draw.line(surface, FRAME_COLOR, (preview_x, preview_y + 4 * self.block_size),
+                         (preview_x + 5 * self.block_size, preview_y + 4 * self.block_size), width=3)
         # draw vertical borders
-        pygame.draw.line(surface, FRAME_COLOR, (preview_x, preview_y - self.block_size),
-                         (preview_x, preview_y + 5 * self.block_size), width=3)
-        pygame.draw.line(surface, FRAME_COLOR, (preview_x + 5 * self.block_size, preview_y - self.block_size),
-                         (preview_x + 5 * self.block_size, preview_y + 5 * self.block_size), width=3)
+        pygame.draw.line(surface, FRAME_COLOR, (preview_x, preview_y - 2 * self.block_size),
+                         (preview_x, preview_y + 4 * self.block_size), width=3)
+        pygame.draw.line(surface, FRAME_COLOR, (preview_x + 5 * self.block_size, preview_y - 2 * self.block_size),
+                         (preview_x + 5 * self.block_size, preview_y + 4 * self.block_size), width=3)
