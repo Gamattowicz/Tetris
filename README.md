@@ -7,6 +7,7 @@
 * [Setup & Installation](#setup-&-installation)
 * [Running The App](#running-the-app)
 * [Features](#features)
+* [Demo](#demo)
 * [Status](#status)
 * [Contact](#contact)
 
@@ -32,7 +33,6 @@ pip install -r requirements.txt
 python main.py
 ```
 
-
 ## Features
 * Saving information about last game to csv file
 * Score and combo system
@@ -40,6 +40,9 @@ python main.py
 * Leaderboard
 * 3 available game mode
 * 3 available game speed
+
+## Demo
+![gameplay.gif](gif/gameplay.gif)
 
 ## Status 
 Project in progress.
