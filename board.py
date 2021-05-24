@@ -2,8 +2,8 @@ import pygame
 
 pygame.font.init()
 
-TITLE_FONT = pygame.font.Font('Maler.ttf', 65)
-SCORE_FONT = pygame.font.Font('LeagueMono-Bold.ttf', 23)
+TITLE_FONT = pygame.font.Font('fonts/Maler.ttf', 65)
+SCORE_FONT = pygame.font.Font('fonts/LeagueMono-Bold.ttf', 23)
 
 BACKGROUND_COLOR = (235, 232, 231)
 FRAME_COLOR = (221, 155, 207)
