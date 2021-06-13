@@ -17,7 +17,7 @@ def draw_leaderboard(win, leaderboard, width, height):
             if i == 0:
                 label = SCORE_FONT.render(j, True, ACTIVE_COLOR)
                 button_x = width / 2 - label.get_width() / 2
-                win.blit(label, (button_x + width_btn, height/ 3 - 100))
+                win.blit(label, (button_x + width_btn, height / 3 - 100))
             else:
                 # draw place of score
                 if index == 0:

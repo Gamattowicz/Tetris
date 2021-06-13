@@ -176,10 +176,10 @@ def draw_name(win, player):
         win.fill(BACKGROUND_COLOR)
 
         lost_text = TITLE_FONT.render('YOU LOST!', True, TEXT_COLOR)
-        WIN.blit(lost_text, (WIDTH / 2 - lost_text.get_width() / 2, HEIGHT / 10))
+        win.blit(lost_text, (WIDTH / 2 - lost_text.get_width() / 2, HEIGHT / 10))
 
         input_text = TITLE_FONT.render('Enter your name:', True, TEXT_COLOR)
-        WIN.blit(input_text, (WIDTH / 2 - input_text.get_width() / 2, HEIGHT / 4 + 50))
+        win.blit(input_text, (WIDTH / 2 - input_text.get_width() / 2, HEIGHT / 4 + 50))
 
         block = SCORE_FONT.render(player.name, True, TEXT_COLOR)
         rect = block.get_rect()
@@ -190,24 +190,24 @@ def draw_name(win, player):
     if player.score > 0:
         player.save_score(player.format_timer)
     player.restart_stats()
-    draw_lost_text(WIN, player)
+    draw_lost_text(win, player)
 
 
-def draw_lost_text(WIN, player):
+def draw_lost_text(win, player):
     global active
     lost = True
 
     while lost:
-        WIN.fill(BACKGROUND_COLOR)
+        win.fill(BACKGROUND_COLOR)
         retry_text = TITLE_FONT.render('Do you want to play again?', True, TEXT_COLOR)
-        WIN.blit(retry_text, (WIDTH / 2 - retry_text.get_width() / 2, HEIGHT / 5))
+        win.blit(retry_text, (WIDTH / 2 - retry_text.get_width() / 2, HEIGHT / 5))
         retry_options = [('YES', 150), ('NO', - 150)]
         for i, v in enumerate(retry_options, start=1):
             if i == active:
                 label = TITLE_FONT.render(v[0], True, ACTIVE_COLOR)
             else:
                 label = TITLE_FONT.render(v[0], True, TEXT_COLOR)
-            WIN.blit(label, (WIDTH / 2 - label.get_width() / 2 - v[1], HEIGHT / 3 + 100))
+            win.blit(label, (WIDTH / 2 - label.get_width() / 2 - v[1], HEIGHT / 3 + 100))
         pygame.display.update()
 
         for event in pygame.event.get():
@@ -227,7 +227,7 @@ def draw_lost_text(WIN, player):
                         active -= 1
                 elif event.key == pygame.K_RETURN:
                     if active == 1:
-                        main(WIN, player)
+                        main(win, player)
                     elif active == 2:
                         pygame.quit()
                         sys.exit()
@@ -263,7 +263,7 @@ def clear_rows(grid, lock, player):
     return num_del
 
 
-def main(WIN, player):
+def main(win, player):
     locked_pos = {}
     grid = create_grid(locked_pos)
     change_piece = False
@@ -333,7 +333,7 @@ def main(WIN, player):
                         if not (valid_space(current_piece, grid, convert_shape_format)):
                             current_piece.y -= 1
                 elif event.key == pygame.K_ESCAPE:
-                    pause(WIN, active, WIDTH, HEIGHT, player.restart_stats, main, main_menu, get_leaderboard, player)
+                    pause(win, active, WIDTH, HEIGHT, player.restart_stats, main, main_menu, get_leaderboard, player)
 
         shape_pos = convert_shape_format(current_piece)
 
@@ -352,18 +352,18 @@ def main(WIN, player):
             change_piece = False
             player.score += clear_rows(grid, locked_pos, player) * player.get_score_factor()
 
-        board.draw_window(WIN, grid, draw_grid)
-        board.draw_next_shape(next_piece, WIN, player.score, player.get_max_score, player.format_timer,
+        board.draw_window(win, grid, draw_grid)
+        board.draw_next_shape(next_piece, win, player.score, player.get_max_score, player.format_timer,
                               player.speed_level, player.combo, player.max_combo)
         pygame.display.update()
 
         if check_lost(locked_pos):
-            draw_name(WIN, player)
+            draw_name(win, player)
 
     pygame.display.quit()
 
 
-def main_menu(WIN):
+def main_menu(win):
     global active
     global mode
     player = Player()
@@ -372,9 +372,9 @@ def main_menu(WIN):
     modes = ['ENDLESS (CONSTANT SPEED)', 'SURVIVAL (INCREASING SPEED WHEN SCORING POINTS)',
              'HARDCORE (INCREASING SPEED OVER TIME)']
     while run:
-        WIN.fill(BACKGROUND_COLOR)
+        win.fill(BACKGROUND_COLOR)
         buttons = ['NEW GAME', f'SPEED: {speeds[player.speed]}', f'MODE: {modes[mode]}', 'LEADERBOARD', 'EXIT']
-        draw_menu(WIN, 'MAIN MENU', buttons, WIDTH, HEIGHT, active)
+        draw_menu(win, 'MAIN MENU', buttons, WIDTH, HEIGHT, active)
         pygame.display.update()
 
         for event in pygame.event.get():
@@ -395,7 +395,7 @@ def main_menu(WIN):
                         active -= 1
                 elif event.key == pygame.K_RETURN:
                     if active == 1:
-                        main(WIN, player)
+                        main(win, player)
                     elif active == 2:
                         if player.speed == 2:
                             player.speed = 0
@@ -415,7 +415,7 @@ def main_menu(WIN):
                         else:
                             mode += 1
                     elif active == 4:
-                        get_leaderboard(WIN, WIDTH, HEIGHT)
+                        get_leaderboard(win, WIDTH, HEIGHT)
                     elif active == 5:
                         pygame.quit()
                         sys.exit()

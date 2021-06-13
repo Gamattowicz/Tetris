@@ -45,7 +45,7 @@ python main.py
 ![gameplay.gif](gif/gameplay.gif)
 
 ## Status 
-Project in progress.
+Project completed.
 
 ## Contact
 Created by [@Gamattowicz](https://github.com/Gamattowicz) - feel free to contact me!

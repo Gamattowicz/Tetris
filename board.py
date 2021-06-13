@@ -45,7 +45,7 @@ class Board:
         preview_x = self.start_x + self.box_width + 50
         preview_y = self.start_y + self.box_height / 2 - 100
         surface.blit(text, (preview_x + 4 * self.block_size - text.get_width() / 2, preview_y - 80 - self.block_size))
-        format = shape.shape[shape.rotation % len(shape.shape)]
+        formatted = shape.shape[shape.rotation % len(shape.shape)]
 
         # draw score
         label = SCORE_FONT.render(f'SCORE: {score}', True, TEXT_COLOR)
@@ -71,7 +71,7 @@ class Board:
         label = SCORE_FONT.render(f'MAX COMBO: {max_combo}', True, TEXT_COLOR)
         surface.blit(label, (self.start_x/2 - label.get_width()/2, preview_y + 100))
 
-        for i, row in enumerate(format):
+        for i, row in enumerate(formatted):
             for j, column in enumerate(row):
                 if column == '0':
                     pygame.draw.rect(surface, shape.color, (preview_x + (j + 1.5) * self.block_size, preview_y + (i - 1) * self.block_size,
