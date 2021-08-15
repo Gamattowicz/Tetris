@@ -19,11 +19,21 @@
 * PyGame 2.0.x
 
 ## Setup & Installation
-Make sure you have the latest version of Python installed.
-```bash
-git clone <repo-url>
-```
+Make sure you have the latest version of Python and pip installed
 
+Clone the repository using the following command
+```bash
+git clone https://github.com/Gamattowicz/Tetris.git
+```
+Create a virtual environment
+```bash
+python -m venv venv
+```
+Active the virtual environment
+```bash
+.\env\Scripts\activate
+```
+Install all the project Requirements
 ```bash
 pip install -r requirements.txt
 ```
